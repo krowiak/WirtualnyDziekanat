@@ -7,6 +7,8 @@ var bodyParser = require('body-parser');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
+var login = require('./routes/login');
+var tajemnice = require('./routes/tajemnice');
 
 var app = express();
 
@@ -18,12 +20,44 @@ app.set('view engine', 'pug');
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 app.use('/users', users);
+
+// Logowanie i sesje
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy
+const session = require('express-session');
+app.use(session({
+  secret: 'straszliwy',
+  resave: false,
+  saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+passport.serializeUser(function(user, done) {
+  done(null, user);
+});
+
+passport.deserializeUser(function(user, done) {
+  done(null, user);
+});
+
+const onlyUser = { username:'admin', password:'admin' }
+passport.use(new LocalStrategy(  
+  function(username, password, done) {
+    if (username === onlyUser.username && password === onlyUser.password) {
+      return done(null, onlyUser)
+    } else {
+      return done(null, false);
+    }
+  }
+))
+app.use('/login', login);
+app.use('/tajemnice', tajemnice);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
