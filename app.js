@@ -4,6 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var passportConfig = require('./authentication/passportConfig')
 
 var index = require('./controllers/index');
 var users = require('./controllers/users');
@@ -26,9 +27,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', index);
-app.use('/users', users);
-
 // Logowanie i sesje
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy
@@ -40,24 +38,12 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
-passport.serializeUser(function(user, done) {
-  done(null, user);
-});
+passport.serializeUser(passportConfig.serialize);
+passport.deserializeUser(passportConfig.deserialize);
+passport.use(new LocalStrategy(passportConfig.checkPassword));
 
-passport.deserializeUser(function(user, done) {
-  done(null, user);
-});
-
-const onlyUser = { username:'admin', password:'admin' }
-passport.use(new LocalStrategy(  
-  function(username, password, done) {
-    if (username === onlyUser.username && password === onlyUser.password) {
-      return done(null, onlyUser)
-    } else {
-      return done(null, false);
-    }
-  }
-))
+app.use('/', index);
+app.use('/users', users);
 app.use('/login', login);
 app.use('/logout', logout);
 app.use('/tajemnice', tajemnice);

@@ -1,3 +1,3 @@
 // Tu coś kiedys zapewne innego
 
-exports.users = []
+exports.users = [{username:'admin', password:'admin'}]

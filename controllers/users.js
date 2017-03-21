@@ -1,11 +1,10 @@
 var express = require('express');
 var router = express.Router();
-
-var uzytkownicy = [{username:"admin", password:"H4sl0_"}]
+var users = require('../models/user');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-  res.send(uzytkownicy);
+  res.send(users.users);
 });
 
 module.exports = router;

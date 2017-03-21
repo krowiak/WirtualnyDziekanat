@@ -1,24 +1,26 @@
 extends layout
 
 block content
-
-    // register form
-    form(method='POST' action='/registration')
-      div.form-group
-        label(for='firstname') Imię:
-        input#firstname.form-control(type='text' name='firstname')
-      div.form-group
-        label(for='lastname') Nazwisko:
-        input#lastname.form-control(type='text' name='lastname')
-      div.form-group
-        label(for='email') Adres e-mail:
-        input#email.form-control(type='email' name='email')
-      div.form-group
-        label(for='password') Hasło:
-        input#password.form-control(type='password' name='password')
-      div.form-group
-        label(for='role') Rola:
-        select#role.select.form-control(name='role')
-            option(value='Admin')
-            option(value='Drugi admin')
-      button.btn.btn-primary(type='submit' enctype='application/x-www-form-urlencoded') Rejestruj
+  
+  form(method='POST' action='/registration')
+    div.form-group
+      label(for='firstname') Imię:
+      input#firstname.form-control(type='text' name='firstname')
+    div.form-group
+      label(for='lastname') Nazwisko:
+      input#lastname.form-control(type='text' name='lastname')
+    div.form-group
+      label(for='email') Adres e-mail:
+      input#email.form-control(type='email' name='email')
+    div.form-group
+      label(for='password') Hasło:
+      input#password.form-control(type='password' name='password')
+    div.form-group
+      label(for='verify-password') Powtórz hasło:
+      input#verify-password.form-control(type='password' name='verify-password')
+    div.form-group
+      label(for='role') Rola:
+      select#role.select.form-control(name='role')
+        each role in roles
+          option(value=role.id) #{role.name}
+    button.btn.btn-primary(type='submit' enctype='application/x-www-form-urlencoded') Rejestruj

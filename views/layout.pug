@@ -4,4 +4,12 @@ html
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
+    block header
+      header
+        if user 
+          .loggedUser #{user.username} #[a(href='/logout') Wyloguj]
+        else
+          span #[a(href='/login') Zaloguj się] lub #[a(href='/registration') zarejestruj się]
     block content
+    block footer
+      footer: p Patrzcie, stopka!
