@@ -10,6 +10,7 @@ var users = require('./controllers/users');
 var login = require('./controllers/login');
 var logout = require('./controllers/logout');
 var tajemnice = require('./controllers/tajemnice');
+var registration = require('./controllers/registration');
 
 var app = express();
 
@@ -60,6 +61,7 @@ passport.use(new LocalStrategy(
 app.use('/login', login);
 app.use('/logout', logout);
 app.use('/tajemnice', tajemnice);
+app.use('/registration', registration);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
