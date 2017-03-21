@@ -8,6 +8,7 @@ var bodyParser = require('body-parser');
 var index = require('./routes/index');
 var users = require('./routes/users');
 var login = require('./routes/login');
+var logout = require('./routes/logout');
 var tajemnice = require('./routes/tajemnice');
 
 var app = express();
@@ -57,6 +58,7 @@ passport.use(new LocalStrategy(
   }
 ))
 app.use('/login', login);
+app.use('/logout', logout);
 app.use('/tajemnice', tajemnice);
 
 // catch 404 and forward to error handler
