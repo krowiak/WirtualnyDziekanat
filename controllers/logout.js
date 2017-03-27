@@ -5,6 +5,7 @@ var router = express.Router();
 // ale też prawdopodobnie nie powinno być stroną, więęęc zostawiam.
 router.get('/', function(req, res, next) {
     	req.logOut();
+    	req.flash('info', 'Wylogowano użytkownika.')
         res.redirect('/');
 });
 

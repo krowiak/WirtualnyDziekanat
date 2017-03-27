@@ -1,15 +1,32 @@
-doctype html
-html
-  head
-    title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
-  body
-    block header
-      header
-        if user 
-          .loggedUser #{user.username} #[a(href='/logout') Wyloguj]
-        else
-          span #[a(href='/login') Zaloguj się] lub #[a(href='/registration') zarejestruj się]
+extends ../node_modules/pug-bootstrap/_bootstrap
+
+mixin alerts(flashObj)
+  if flashObj && flashObj.anyAlerts
+      each error in flashObj.errors
+        +alert-ix-danger(error)
+      each warning in flashObj.warnings
+        +alert-ix-warning(warning)
+      each success in flashObj.successes
+        +alert-ix-success(success)
+      each info in flashObj.infos
+        +alert-ix-info(info)
+
+block append styles
+  link(rel="stylesheet",href="/stylesheets/style.css")
+block  body
+  block header
+    +navbar("Wirtualny dziekanat", "dropdown_menu")
+      +nav_item("/","active") Strona główna
+      if user 
+        +nav_item("/logout") Wyloguj
+      else
+        +nav_item("/login") Zaloguj się
+        +nav_item("/registration") Zarejestruj się
+    header
+  .container
+    +alerts(flash)
     block content
-    block footer
-      footer: p Patrzcie, stopka!
+  block footer
+    footer.footer
+      .container
+        p.text-muted Patrzcie, stopka!

@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
 var Users = require('../models/user');
-const helpers = require('./helpers');
 
 const databaza = [
   {id:1, name:'Administrator'}, 
@@ -12,9 +11,8 @@ const databaza = [
 
 /* GET ekran rejestracji. */
 router.get('/', function(req, res, next) {
-  const layoutData = helpers.createLayoutData(req);
-  layoutData.roles = databaza;
-  res.render('registration', layoutData);
+  req.viewData.roles = databaza;
+  res.render('registration', req.viewData);
 });
 
 router.post('/', function(req, res, next) {

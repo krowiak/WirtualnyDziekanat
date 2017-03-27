@@ -4,7 +4,10 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var passportConfig = require('./authentication/passportConfig')
+var passportConfig = require('./authentication/passportConfig');
+var auth = require('./authentication/middleware');
+var flash = require('express-flash');
+var helpers = require('./controllers/helpers');
 
 var index = require('./controllers/index');
 var users = require('./controllers/users');
@@ -36,18 +39,29 @@ app.use(session({
   resave: false,
   saveUninitialized: false
 }));
+app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 passport.serializeUser(passportConfig.serialize);
 passport.deserializeUser(passportConfig.deserialize);
 passport.use(new LocalStrategy(passportConfig.checkPassword));
 
+// Dodaje obiekt danych widoku wykorzystywany przez layout.pug i potencjalnie inne pugi
+app.use(function(req, res, next) {
+    req.viewData = helpers.createCommonViewData(req);
+    next();
+});
 app.use('/', index);
 app.use('/users', users);
 app.use('/login', login);
 app.use('/logout', logout);
-app.use('/tajemnice', tajemnice);
 app.use('/registration', registration);
+
+// W ten sposób można ustalić ścieżkę, dla której zawsze wymagane bedzie logowanie
+// Np. app.use('/student', auth.authenticate());, i potem wszystkie adresy typu 
+// /student/podania itd. będą wymagały logowania
+app.use('/tajemnice', auth.authenticate());
+app.use('/tajemnice', tajemnice);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
