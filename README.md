@@ -1,2 +1,2 @@
 # WirtualnyDziekanat
-Wirtualny dziekanat na PZ i PzUMZ
+Wirtualny dziekanat na PZ i PzUMZ.
