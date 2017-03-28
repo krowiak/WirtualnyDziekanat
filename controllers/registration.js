@@ -1,22 +1,23 @@
 'use strict';
 
-const databaza = [
-  {id:1, name:'Administrator'}, 
-  {id:2, name:'Nauczyciel'},
-  {id:3, name:'Student'},
-  {id:4, name:'Drugi administrator'},
-];
 const express = require('express');
 const router = express.Router();
 const Users = require('../models/user');
+const UserRoles = require("../models/user-roles");
 const UserAlreadyExistsError = require("../models/errors/user-already-exists");
 const InvalidPasswordError = require("../models/errors/invalid-password");
 const SequelizeValidationError = require("sequelize").ValidationError;
 const s = require("sprintf-js");
+const _ = require("lodash");
 
 /* GET ekran rejestracji. */
 router.get('/', function(req, res, next) {
-  req.viewData.roles = databaza;
+  const rolesForView = _(UserRoles.Roles)
+    .toPairs()
+    .map((pair) => { return { id: pair[0], name: pair[1] }; })
+    .value();
+  
+  req.viewData.roles = rolesForView;
   res.render('registration', req.viewData);
 });
 
