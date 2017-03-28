@@ -16,6 +16,10 @@ var logout = require('./controllers/logout');
 var tajemnice = require('./controllers/tajemnice');
 var registration = require('./controllers/registration');
 
+// // Do Kosza
+// const User = require("./models/user");
+// User.User.sync({force: true});
+
 var app = express();
 
 // view engine setup
