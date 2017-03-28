@@ -16,7 +16,7 @@ var logout = require('./controllers/logout');
 var tajemnice = require('./controllers/tajemnice');
 var registration = require('./controllers/registration');
 
-// // Do Kosza
+// // Tworzy tabelę użytkowników, jeśli jakaś istniała ją dropi
 // const User = require("./models/user");
 // User.User.sync({force: true});
 

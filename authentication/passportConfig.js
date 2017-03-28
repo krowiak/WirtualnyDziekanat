@@ -1,10 +1,11 @@
 const users = require('../models/user');
 const _ = require('lodash');
 const s = require('sprintf-js');
-const hash = require("password-hash");
+const LoginFailedError = require("../models/errors/login-failed");
 
-const loggedInMsgFormat = 'Zalogowano jako %(email)s.';
+const loggedInMsgFormat = 'Zalogowano jako %s.';
 const loginFailedMsg = 'Niepoprawna nazwa użytkownika lub hasło.';
+const unknownErrorMsg = 'Nie udało się zalogować. Spróbuj ponownie za jakiś czas.';
 
 const serializeUser = function(user, done) {
   done(null, user);
@@ -17,12 +18,11 @@ const deserializeUser = function(user, done) {
 // B. bezpiecznie
 const checkPassword = function(username, password, done) {
   users.login(username, password).then(function(usr) {
-      console.log('----------------------------then');
-      done(null, usr, /*{ message: s.sprintf(loggedInMsgFormat, usr) }*/ {message: 'YAY'});
+    done(null, usr, { message: s.sprintf(loggedInMsgFormat, usr.email) });
+  }).catch(LoginFailedError, function(err) {
+    done(null, false, { message: loginFailedMsg });
   }).catch(function(err) {
-      console.log('----------------------------catch');
-      console.log(err);
-      done(null, false, { message: loginFailedMsg });
+    done(null, false, { message: unknownErrorMsg });
   });
 };
 
