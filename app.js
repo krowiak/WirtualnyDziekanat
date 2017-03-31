@@ -70,6 +70,18 @@ app.use('/registration', registration);
 app.use('/tajemnice', auth.authenticate());
 app.use('/tajemnice', tajemnice);
 
+// Strony tylko dla administratorów
+app.use('/admin', auth.authenticate());
+app.use('/admin', auth.authorize('1'));
+
+// Strony tylko dla nauczycieli
+app.use('/teacher', auth.authenticate());
+app.use('/teacher', auth.authorize('32'));
+
+// Strony tylko dla studentów
+app.use('/student', auth.authenticate());
+app.use('/student', auth.authorize('3'));
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   logger.debug('Strona nie istnieje: ' + req.url);
