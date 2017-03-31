@@ -67,7 +67,8 @@ const definition = connection.connection.define('users', {
     allowNull: false
   }
 }, {
-  freezeTableName: true // Model tableName will be the same as the model name
+  freezeTableName: true, // Model tableName will be the same as the model name
+  underscored: true  // Nazwy automatycznie wygenerowanych pól będą uzywać_podkreśleń zamiast CamelCase'a. Bez tego ręczne selecty itp. się komplikują ;-(
 });
 
 exports.User = definition;

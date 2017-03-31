@@ -2,7 +2,7 @@
 const s = require("sprintf-js");
 
 function validateLength(password) {
-    const min = 6,
+    const min = 5,  // "admin"
         max = 50;
         
     if (!password) {
