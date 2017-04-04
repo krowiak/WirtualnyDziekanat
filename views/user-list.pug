@@ -1,0 +1,9 @@
+extends layout
+
+block content
+  
+  each user in users
+    div
+      p #{user.id} #{user.firstName} #{user.lastName} #{user.locked} #{user.forcePasswordChange}
+      button(onClick='$.post("changeLocked", {changes: [{id: 2, locked: false}]});') False
+      button(onClick='$.post("changeLocked", {changes: [{id: 2, locked: true}]});') True

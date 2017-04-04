@@ -8,6 +8,7 @@ const passwordValidation = require("../authentication/password-validation");
 const UserAlreadyExistsError = require("./errors/user-already-exists");
 const LoginFailedError = require("./errors/login-failed");
 const InvalidPasswordError = require("./errors/invalid-password");
+const AccountLockedError = require("./errors/account-locked");
 
 const definition = connection.connection.define('users', {
   id: {
@@ -103,17 +104,21 @@ exports.login = function (email, password) {
     return definition.find(
       { where: { email: email } } 
     ).then(function(usr) {
-        if (usr && hash.verify(password, usr.hashedPassword))
+        if (usr)
         {
-          return usr;
-        }
-        else
-        {
-          if (!usr) {
-            throw new LoginFailedError('Użytkownik o podanej nazwie nie istnieje.');
+          if (hash.verify(password, usr.hashedPassword)) {
+            if (usr.locked) {
+              throw new AccountLockedError();
+            } else {
+              return usr;
+            }
           } else {
             throw new LoginFailedError('Złe hasło użytkownika.');
           }
+        }
+        else
+        {
+          throw new LoginFailedError('Użytkownik o podanej nazwie nie istnieje.');
         }
     })
 };
