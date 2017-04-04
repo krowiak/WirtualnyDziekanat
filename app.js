@@ -76,7 +76,7 @@ app.use('/admin', auth.authorize('1'));
 
 // Strony tylko dla nauczycieli
 app.use('/teacher', auth.authenticate());
-app.use('/teacher', auth.authorize('32'));
+app.use('/teacher', auth.authorize('2'));
 
 // Strony tylko dla studentów
 app.use('/student', auth.authenticate());
