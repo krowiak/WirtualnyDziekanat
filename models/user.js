@@ -72,6 +72,7 @@ const definition = connection.connection.define('users', {
 });
 
 exports.User = definition;
+exports.publicFields = [ 'id', 'firstName', 'lastName', 'email', 'locked', 'role', 'forcePasswordChange' ];
 exports.createNewUser = function (userData) {
     const password = userData.password;
     const passValidation = passwordValidation.validatePassword(password);

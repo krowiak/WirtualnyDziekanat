@@ -1,28 +1,28 @@
-var express = require('express');
-var path = require('path');
-var favicon = require('serve-favicon');
-var morgan = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var passportConfig = require('./authentication/passportConfig');
-var auth = require('./authentication/middleware');
-var flash = require('express-flash');
-var helpers = require('./controllers/helpers');
-var logger = require('winston');
-var loggerConfig = require('./logging/logging-config');
+'use strict';
 
-var index = require('./controllers/index');
-var users = require('./controllers/users');
-var login = require('./controllers/login');
-var logout = require('./controllers/logout');
-var tajemnice = require('./controllers/tajemnice');
-var registration = require('./controllers/registration');
+const express = require('express');
+const path = require('path');
+const favicon = require('serve-favicon');
+const morgan = require('morgan');
+const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+const passportConfig = require('./authentication/passportConfig');
+const auth = require('./authentication/middleware');
+const flash = require('express-flash');
+const helpers = require('./controllers/helpers');
+const logger = require('winston');
+const loggerConfig = require('./logging/logging-config');
+const index = require('./controllers/index');
+const users = require('./controllers/users');
+const login = require('./controllers/login');
+const logout = require('./controllers/logout');
+const tajemnice = require('./controllers/tajemnice');
+const registration = require('./controllers/registration');
+const userLists = require('./controllers/user-list');
 
-// // Tworzy tabelę użytkowników, jeśli jakaś istniała ją dropi
-// const User = require("./models/user");
-// User.User.sync({force: true});
 
-var app = express();
+const app = express();
+
 loggerConfig.initialize();
 
 // view engine setup
@@ -73,6 +73,7 @@ app.use('/tajemnice', tajemnice);
 // Strony tylko dla administratorów
 app.use('/admin', auth.authenticate());
 app.use('/admin', auth.authorize('1'));
+app.use('/admin/list', userLists);
 
 // Strony tylko dla nauczycieli
 app.use('/teacher', auth.authenticate());
