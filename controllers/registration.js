@@ -23,7 +23,6 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/', function(req, res, next) {
-  logger.debug('Dane rejestracji: %s', req.body);
   const pass1 = req.body.password,
     pass2 = req.body['verify-password'];
   

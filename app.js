@@ -19,6 +19,7 @@ const logout = require('./controllers/logout');
 const tajemnice = require('./controllers/tajemnice');
 const registration = require('./controllers/registration');
 const userLists = require('./controllers/user-list');
+const password = require('./controllers/password');
 
 
 const app = express();
@@ -63,6 +64,7 @@ app.use('/users', users);
 app.use('/login', login);
 app.use('/logout', logout);
 app.use('/registration', registration);
+app.use('/password', password);
 
 // W ten sposób można ustalić ścieżkę, dla której zawsze wymagane bedzie logowanie
 // Np. app.use('/student', auth.authenticate());, i potem wszystkie adresy typu 

@@ -9,6 +9,8 @@ const UserAlreadyExistsError = require("./errors/user-already-exists");
 const LoginFailedError = require("./errors/login-failed");
 const InvalidPasswordError = require("./errors/invalid-password");
 const AccountLockedError = require("./errors/account-locked");
+const crypto = require('crypto');
+const logger = require('winston');
 
 const definition = connection.connection.define('users', {
   id: {
@@ -66,6 +68,16 @@ const definition = connection.connection.define('users', {
     type: Sequelize.BOOLEAN,
     field: 'force_pass_change',
     allowNull: false
+  },
+  passwordResetToken: {
+    type: Sequelize.STRING(40),
+    field: 'password_reset_token',
+    allowNull: true
+  },
+  passwordResetExpirationDate: {
+    type: Sequelize.DATE,
+    field: 'password_reset_expiration_date',
+    allowNull: true
   }
 }, {
   freezeTableName: true, // Model tableName will be the same as the model name
@@ -122,3 +134,34 @@ exports.login = function (email, password) {
         }
     })
 };
+exports.generatePassResetToken = function (user) {
+  const resetTokenLengthInBytes = 20;
+  const oneHourInMs = 60*60*1000;
+  const randomBytes = Promise.promisify(crypto.randomBytes);
+  return randomBytes(resetTokenLengthInBytes).then((bytes) => {
+    user.passwordResetToken = bytes.toString('hex');
+    user.passwordResetExpirationDate = new Date(Date.now() + oneHourInMs);
+    return user.save().then(() => {
+      Promise.resolve({ token: user.passwordResetToken,
+        expiration: user.passwordResetExpirationDate });
+    });
+  }).catch((err) => {
+      logger.warn('Błąd podczas generowania tokenu resetowania hasła: %s', err);
+      throw err;
+  });
+}
+exports.changePassword = function (user, newPassword) {
+    const passValidation = passwordValidation.validatePassword(newPassword);
+    if (passValidation.success) {
+      logger.info('Udana zmiana hasła.');
+      const hashedPassword = hash.generate(newPassword);
+      user.hashedPassword = hashedPassword;
+      user.passwordResetToken = null;
+      user.passwordResetExpirationDate = null;
+      user.forcePasswordChange = false;
+      return user.save();
+    } else {
+      logger.warn('Hasło niepoprawne: %s', passValidation);
+      return Promise.reject(new InvalidPasswordError(passValidation.message));
+    }
+}
