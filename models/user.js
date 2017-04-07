@@ -142,7 +142,7 @@ exports.generatePassResetToken = function (user) {
     user.passwordResetToken = bytes.toString('hex');
     user.passwordResetExpirationDate = new Date(Date.now() + oneHourInMs);
     return user.save().then(() => {
-      Promise.resolve({ token: user.passwordResetToken,
+      return Promise.resolve({ token: user.passwordResetToken,
         expiration: user.passwordResetExpirationDate });
     });
   }).catch((err) => {
