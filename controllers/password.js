@@ -106,7 +106,6 @@ router.post('/forgot', function(req, res, next) {
           host: req.get('host'),
           pathname: s.sprintf('/password/reset/%s', generated.token)
         });
-        logger.info('Adres odzyskiwania hasła: %s', recoveryAddress);
         const message = {
           from: 'wirtualnyadmin@wirtualnydziekanat.com',
           to: userMail,
