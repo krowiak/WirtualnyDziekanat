@@ -8,5 +8,5 @@ block content
     - let changedForcePassChange = !user.forcePasswordChange;
     div
       p #{user.id} #{user.firstName} #{user.lastName} #{user.locked} #{user.forcePasswordChange}
-      button(onClick='$.post("changeLocked", {changes: [{id: ' + userId + ', locked: ' + changedUserLocked + '}]});') Przełącz zablokowanie
-      button(onClick='$.post("changeForcePassChange", {changes: [{id: ' + userId + ', forcePasswordChange: ' + changedForcePassChange + '}]});') Przełącz wymuszanie zmiany hasła
+      button(onClick='$.post("changeUsers", {changes: [{id: ' + userId + ', locked: ' + changedUserLocked + '}]});') Przełącz zablokowanie
+      button(onClick='$.post("changeUsers", {changes: [{id: ' + userId + ', forcePasswordChange: ' + changedForcePassChange + '}]});') Przełącz wymuszanie zmiany hasła

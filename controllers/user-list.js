@@ -45,9 +45,8 @@ router.get('/admins', function(req, res, next) {
     });
 });
 
-router.post('/changeLocked', function(req, res, next) {
+router.post('/changeUsers', function(req, res, next) {
     const changes = req.body.changes;
-    console.log(req.body);
     if (changes) {
         const changedObjIds = changes.map((obj) => obj.id);
         logger.debug('Id zmienionych obiektów: %s', changedObjIds);
@@ -55,7 +54,12 @@ router.post('/changeLocked', function(req, res, next) {
             return getUsersByIds(changedObjIds).then((users) => {
                 const usersByIds = _.keyBy(users, 'id');
                 for (let changedUser of changes) {
-                    usersByIds[changedUser.id].locked = changedUser.locked;
+                    for (let changedFieldKey of Object.keys(changedUser)) {
+                        if (changedFieldKey !== 'id') {
+                            usersByIds[changedUser.id][changedFieldKey] = changedUser[changedFieldKey];
+                            logger.info('Id %s - %s: %s', changedUser.id, changedFieldKey, changedUser[changedFieldKey]);
+                        }
+                    }
                     usersByIds[changedUser.id].save();
                 }
             })
@@ -64,32 +68,7 @@ router.post('/changeLocked', function(req, res, next) {
             res.send('/');  // Źle
         });
     } else {
-        logger.debug('Brak zmian blokowania użytkowników.');
-        req.flash('info', 'Brak zmian do wprowadzenia.');
-        res.send('back');  // Nadal źle
-    }
-});
-
-router.post('/changeForcePassChange', function(req, res, next) {
-    const changes = req.body.changes;
-    console.log(req.body);
-    if (changes) {
-        const changedObjIds = changes.map((obj) => obj.id);
-        logger.debug('Id zmienionych obiektów: %s', changedObjIds);
-        connection.transaction(function(t) {
-            return getUsersByIds(changedObjIds).then((users) => {
-                const usersByIds = _.keyBy(users, 'id');
-                for (let changedUser of changes) {
-                    usersByIds[changedUser.id].forcePasswordChange = changedUser.forcePasswordChange;
-                    usersByIds[changedUser.id].save();
-                }
-            })
-        }).then(() => {
-            req.flash('info', 'Zmiany zostały zapisane.');
-            res.send('/');  // Źle
-        });
-    } else {
-        logger.debug('Brak zmian wymuszania zmian haseł użytkowników.');
+        logger.debug('Brak zmian użytkowników.');
         req.flash('info', 'Brak zmian do wprowadzenia.');
         res.send('back');  // Nadal źle
     }

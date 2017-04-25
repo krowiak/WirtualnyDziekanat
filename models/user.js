@@ -164,11 +164,6 @@ exports.changePassword = function (user, newPassword) {
         {
             where: { id: user.id }
         });
-      // user.hashedPassword = hashedPassword;
-      // user.passwordResetToken = null;
-      // user.passwordResetExpirationDate = null;
-      // user.forcePasswordChange = false;
-      // return user.save();
     } else {
       logger.warn('Hasło niepoprawne: %s', passValidation);
       return Promise.reject(new InvalidPasswordError(passValidation.message));
