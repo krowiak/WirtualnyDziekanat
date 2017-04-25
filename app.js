@@ -59,12 +59,14 @@ app.use(function(req, res, next) {
     req.viewData = helpers.createCommonViewData(req);
     next();
 });
+app.use('/password', password);
+app.use('/logout', logout);
+app.use(auth.forcePasswordChange());
 app.use('/', index);
 app.use('/users', users);
 app.use('/login', login);
-app.use('/logout', logout);
 app.use('/registration', registration);
-app.use('/password', password);
+
 
 // W ten sposób można ustalić ścieżkę, dla której zawsze wymagane bedzie logowanie
 // Np. app.use('/student', auth.authenticate());, i potem wszystkie adresy typu 

@@ -5,12 +5,12 @@ function authenticationMiddleware () {
   return function (req, res, next) {
     if (req.isAuthenticated()) {
       logger.debug('Użytkownik zalogowany, dostęp do ' + req.url);
-      return next();
+      next();
+    } else {
+      logger.debug('Użytkownik niezalogowany, brak dostępu do ' + req.url);
+      req.flash('warning', 'By uzyskać dostęp do tej strony należy się zalogować.');
+      res.redirect('/login');
     }
-    
-    logger.debug('Użytkownik niezalogowany, brak dostępu do ' + req.url);
-    req.flash('warning', 'By uzyskać dostęp do tej strony należy się zalogować.');
-    res.redirect('/login');
   };
 }
 
@@ -34,5 +34,19 @@ function authorizeRole(roleId) {
   }
 }
 
+function forcePasswordChange() {
+  return function (req, res, next) {
+    if (req.isAuthenticated() && req.user.forcePasswordChange) {
+      logger.debug('Użytkownik %s musi zmienić hasło', req.user.id);
+      req.flash('Musisz zmienić hasło.');
+      req.session.forcePasswordChange = true;
+      res.redirect('/password/force-reset');
+    } else {
+      return next();
+    }
+  }
+}
+
 exports.authenticate = authenticationMiddleware;
 exports.authorize = authorizeRole;
+exports.forcePasswordChange = forcePasswordChange;

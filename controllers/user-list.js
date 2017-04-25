@@ -38,6 +38,13 @@ router.get('/teachers', function(req, res, next) {
     });
 });
 
+router.get('/admins', function(req, res, next) {
+    getUsersOfRole('1').then(function(users) {
+        req.viewData.users = users;
+        res.render('user-list', req.viewData);
+    });
+});
+
 router.post('/changeLocked', function(req, res, next) {
     const changes = req.body.changes;
     console.log(req.body);
@@ -58,6 +65,31 @@ router.post('/changeLocked', function(req, res, next) {
         });
     } else {
         logger.debug('Brak zmian blokowania użytkowników.');
+        req.flash('info', 'Brak zmian do wprowadzenia.');
+        res.send('back');  // Nadal źle
+    }
+});
+
+router.post('/changeForcePassChange', function(req, res, next) {
+    const changes = req.body.changes;
+    console.log(req.body);
+    if (changes) {
+        const changedObjIds = changes.map((obj) => obj.id);
+        logger.debug('Id zmienionych obiektów: %s', changedObjIds);
+        connection.transaction(function(t) {
+            return getUsersByIds(changedObjIds).then((users) => {
+                const usersByIds = _.keyBy(users, 'id');
+                for (let changedUser of changes) {
+                    usersByIds[changedUser.id].forcePasswordChange = changedUser.forcePasswordChange;
+                    usersByIds[changedUser.id].save();
+                }
+            })
+        }).then(() => {
+            req.flash('info', 'Zmiany zostały zapisane.');
+            res.send('/');  // Źle
+        });
+    } else {
+        logger.debug('Brak zmian wymuszania zmian haseł użytkowników.');
         req.flash('info', 'Brak zmian do wprowadzenia.');
         res.send('back');  // Nadal źle
     }

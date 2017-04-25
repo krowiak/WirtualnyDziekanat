@@ -3,7 +3,10 @@ extends layout
 block content
   
   each user in users
+    - let userId = user.id;
+    - let changedUserLocked = !user.locked;
+    - let changedForcePassChange = !user.forcePasswordChange;
     div
       p #{user.id} #{user.firstName} #{user.lastName} #{user.locked} #{user.forcePasswordChange}
-      button(onClick='$.post("changeLocked", {changes: [{id: 2, locked: false}]});') False
-      button(onClick='$.post("changeLocked", {changes: [{id: 2, locked: true}]});') True
+      button(onClick='$.post("changeLocked", {changes: [{id: ' + userId + ', locked: ' + changedUserLocked + '}]});') Przełącz zablokowanie
+      button(onClick='$.post("changeForcePassChange", {changes: [{id: ' + userId + ', forcePasswordChange: ' + changedForcePassChange + '}]});') Przełącz wymuszanie zmiany hasła
