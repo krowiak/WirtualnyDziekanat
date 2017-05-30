@@ -4,6 +4,10 @@ const Sequelize = require('sequelize');
 const connection = require("../database/connection").connection;
 const user = require('./user').User;
 const subject = require('./subject').Subject;
+const SubjectDoesNotExistError = require("./errors/subject-does-not-exist");
+const UserDoesNotExistError = require("./errors/user-does-not-exist");
+const logger = require('winston');
+
 const thisTableName = 'user_subjects';
 
 const definition = connection.define(thisTableName, {
@@ -19,3 +23,41 @@ user.belongsToMany(subject, {through: thisTableName, otherKey: 'userId'});
 subject.belongsToMany(user, {through: thisTableName, otherKey: 'subjectId'});
 
 exports.UserSubjects = definition;
+
+function ensureExistThen(subjectId, userId, then) {
+  return subject.Subject.findOne({where: { id: subjectId }})
+    .then((subject) => {
+      if (subject) {
+        user.User.findOne({ where: {id: userId }})
+          .then((user) => {
+            if (user) {
+              return then(subject, user);
+            } else {
+              throw new UserDoesNotExistError('Użytkownik o podany ID nie istnieje.', userId);
+            }
+          });
+      } else {
+        throw new SubjectDoesNotExistError('Przedmiot o podanym ID nie istnieje.', subjectId);
+      }
+    });
+}
+
+exports.add = function (subjectId, userId) {
+  return ensureExistThen(subjectId, userId, (subject, user) => {
+    definition.findOrCreate({
+      where: {
+        userId: userId,
+        subjectId: subjectId
+      }
+    }).spread((association, created) => {
+      return {created: created, association: association};
+    });
+  });
+};
+
+exports.remove = function (subjectId, userId) {
+  return ensureExistThen(subjectId, userId, (subject, user) => {
+    return user.removeSubject(subject)
+      .then(() => logger.info('Użytkownik usunięty z przedmiotu.'));
+  });
+};
