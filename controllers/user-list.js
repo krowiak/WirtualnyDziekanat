@@ -7,10 +7,17 @@ const logger = require('winston');
 const _ = require('lodash');
 const connection = require('../database/connection').connection;
 
-function getUsersOfRole(roleId) {
+const getStudents = '/students';
+const getTeachers = '/teachers';
+const getAdmins = '/admins';
+const getLimitSyntax = '/offset/:offset/limit/:limit';
+
+function getUsersOfRole(roleId, offset, limit) {
     return users.User.findAll({
         where: { role: roleId },
-        attributes: users.publicFields
+        attributes: users.publicFields,
+        offset: offset,
+        limit: limit
     });
 }
 
@@ -24,25 +31,36 @@ function getUsersByIds(ids) {
     });
 }
 
-router.get('/students', function(req, res, next) {
-    getUsersOfRole('3').then(function(users) {
-        req.viewData.users = users;
-        res.render('user-list', req.viewData);
-    });
+function displayUsers(req, res, users) {
+    req.viewData.users = users;
+    res.render('user-list', req.viewData);
+};
+
+function curryDisplayUsers(req, res) {
+    return (users) => displayUsers(req, res, users);
+};
+
+router.get(['/', getLimitSyntax], function(req, res, next) {
+    users.User.findAll({ 
+        attributes: users.publicFields,
+        offset: req.params.offset,
+        limit: req.params.limit
+    }).then(curryDisplayUsers(req, res));
 });
 
-router.get('/teachers', function(req, res, next) {
-    getUsersOfRole('2').then(function(users) {
-        req.viewData.users = users;
-        res.render('user-list', req.viewData);
-    });
+router.get([getAdmins, getAdmins + getLimitSyntax], function(req, res, next) {
+    getUsersOfRole('1', req.params.offset, req.params.limit)
+        .then(curryDisplayUsers(req, res));
 });
 
-router.get('/admins', function(req, res, next) {
-    getUsersOfRole('1').then(function(users) {
-        req.viewData.users = users;
-        res.render('user-list', req.viewData);
-    });
+router.get([getTeachers, getTeachers + getLimitSyntax], function(req, res, next) {
+    getUsersOfRole('2', req.params.offset, req.params.limit)
+        .then(curryDisplayUsers(req, res));
+});
+
+router.get([getStudents, getStudents + getLimitSyntax], function(req, res, next) {
+    getUsersOfRole('3', req.params.offset, req.params.limit)
+        .then(curryDisplayUsers(req, res));
 });
 
 router.post('/changeUsers', function(req, res, next) {
@@ -62,7 +80,7 @@ router.post('/changeUsers', function(req, res, next) {
                     }
                     usersByIds[changedUser.id].save();
                 }
-            })
+            });
         }).then(() => {
             req.flash('info', 'Zmiany zostały zapisane.');
             res.send('/');  // Źle
