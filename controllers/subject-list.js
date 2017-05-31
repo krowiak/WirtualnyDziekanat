@@ -21,13 +21,12 @@ const getLimitSyntax = '/offset/:offset/limit/:limit';
 // np. student należy do przedmiotu+nauczyciela, rozróżnienie wykładowca/ćwiczeniowiec?
 // Ale jesteśmy trosik do tyłu, a w wymaganiach nic nie ma, więęęc.
 
-function displaySubjects(req, res, subjects) {
-    req.viewData.subjects = subjects;
-    res.render('subject-list', req.viewData);
+function sendSubjects(req, res, subjects) {
+    res.send(subjects);
 };
 
-function curryDisplaySubjects(req, res) {
-    return (subjects) => displaySubjects(req, res, subjects);
+function currySendSubjects(req, res) {
+    return (subjects) => sendSubjects(req, res, subjects);
 };
 
 router.get(['/', getLimitSyntax], function(req, res, next) {
@@ -35,7 +34,21 @@ router.get(['/', getLimitSyntax], function(req, res, next) {
         offset: req.params.offset,
         limit: req.params.limit,
         attributes: subjects.publicFields
-    }).then(curryDisplaySubjects(req, res));
+    }).then(currySendSubjects(req, res));
+});
+
+// Do kosza, ale dopóki nie mamy faktycznego niczego...
+router.get('/frontend', function(req, res, next) {
+    subjects.Subject.findAll({
+        offset: req.params.offset,
+        limit: req.params.limit,
+        attributes: subjects.publicFields
+    }).then(
+        (subjects) => {
+            req.viewData.subjects = subjects;
+            res.render('subject-list', req.viewData);
+        }
+    );
 });
 
 router.get([getUsersSubjects, getUsersSubjects + getLimitSyntax], function(req, res, next) {
@@ -47,31 +60,27 @@ router.get([getUsersSubjects, getUsersSubjects + getLimitSyntax], function(req, 
         offset: req.params.offset,
         limit: req.params.limit,
         attributes: subjects.publicFields
-    }).then(curryDisplaySubjects(req, res));
+    }).then(currySendSubjects(req, res));
 });
 
 router.post('/add-subject', function(req, res, next) {
     const name = req.body.name;
     subjects.createNewSubject(name).then((subject) => {
-        req.flash('info', s.sprintf('Dodano przedmiot "%s".', name));
-        res.redirect('back');
+        res.send({ type: 'info', message: s.sprintf('Dodano przedmiot "%s".', name) })
     }).catch(SubjectAlreadyExistsError, function(err) {
-        req.flash('warning', 'Przedmiot o podanej nazwie już istnieje.');
-        res.redirect('back');
+        res.send({ type: 'warning', message: 'Przedmiot o podanej nazwie już istnieje.' })
     }).catch(SequelizeValidationError, function(err) {
         logger.debug('Dodawanie przedmiotu - błąd walidacji modelu: %s', err.message);
         const errors = err.errors;
         if (errors.length === 1) {
-            req.flash('warning', errors[0].message);
+            res.send({ type: 'warning', message: errors[0].message });
         } else {
-            req.flash('warning', s.sprintf('%i błędów, w tym: "%s"', errors.length, 
-            errors[0].message));
+            res.send({ type: 'warning', message: s.sprintf('%i błędów, w tym: "%s"', errors.length, 
+                errors[0].message) });
         }
-        res.redirect('back');
     }).catch(function(err) {
         logger.error('Dodawanie przedmiotu - błąd: %s', err);
-        req.flash('error', 'Błąd dodawania przedmiotu. Moze następnym razem pójdzie lepiej!');
-        res.redirect('back');
+        res.send({ type: 'error', message: 'Błąd dodawania przedmiotu. Moze następnym razem pójdzie lepiej!' });
     });
 });
 
@@ -81,12 +90,10 @@ router.post('/delete-subject', function(req, res, next) {
         if (subject) {
             const name = subject.name;
             subject.destroy().then((_) => {
-               req.flash('info', s.sprintf('Przedmiot "%s" został usunięty.', name));
-               res.send('back');  // Źle ^_~
+               res.send({ type: 'info', message: s.sprintf('Przedmiot "%s" został usunięty.', name)});
             });
         } else {
-            req.flash('warning', 'Wskazany przedmiot nie istnieje.');
-            res.send('back');  // źLE ~_^
+            res.send({ type: 'warning', message: 'Wskazany przedmiot nie istnieje.' });
         }
     });
 });
@@ -121,13 +128,11 @@ router.post('/change-subjects', function(req, res, next) {
                 }
             });
         }).then(() => {
-            req.flash('info', 'Zmiany zostały zapisane.');
-            res.send('/');  // Źle
+            res.send({ type: 'info', message: 'Zmiany zostały zapisane.' });
         });
     } else {
         logger.debug('Brak zmian przedmiotów.');
-        req.flash('info', 'Brak zmian do wprowadzenia.');
-        res.send('back');  // Nadal źle
+        res.send({ type: 'warning', message: 'Brak zmian do wprowadzenia.' });
     }
 });
 
