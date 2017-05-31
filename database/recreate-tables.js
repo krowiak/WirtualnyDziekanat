@@ -7,4 +7,11 @@ const userSubjects = require("../models/user-subjects");
 const grades = require("../models/grade");
 
 connection.drop();
-connection.sync({force: true});
+connection.sync({force: true}).then(() =>
+    users.createNewUser({
+        password: "admin",
+        email: "admin@us.pl",
+        firstName: "Sknerus",
+        lastName: "McKwacz",
+        role: "1"
+    }));
