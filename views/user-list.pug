@@ -1,12 +1,29 @@
 extends layout
 
 block content
-  
-  each user in users
-    - let userId = user.id;
-    - let changedUserLocked = !user.locked;
-    - let changedForcePassChange = !user.forcePasswordChange;
-    div
-      p #{user.id} #{user.firstName} #{user.lastName} #{user.locked} #{user.forcePasswordChange}
-      button(onClick='$.post("changeUsers", {changes: [{id: ' + userId + ', locked: ' + changedUserLocked + '}]});') Przełącz zablokowanie
-      button(onClick='$.post("changeUsers", {changes: [{id: ' + userId + ', forcePasswordChange: ' + changedForcePassChange + '}]});') Przełącz wymuszanie zmiany hasła
+	table.table
+		thead.thead-inverse
+		tr
+			th id
+			th First Name
+			th Last Name
+			th Lock
+			th Password Change
+		tbody
+		each user in users
+			- let userId = user.id;
+			- let changedUserLocked = !user.locked;
+			- let changedForcePassChange = !user.forcePasswordChange;
+			tr
+				td #{user.id}
+				td #{user.firstName}
+				td #{user.lastName}
+				td
+					button.btn.btn-warning(onClick='$.post("changeUsers", {changes: [{id: ' + userId + ', locked: ' + changedUserLocked + '}]});',type='button') Zablokuj
+				td
+					button.btn.btn-danger(onClick='$.post("changeUsers", {changes: [{id: ' + userId + ', forcePasswordChange: ' + changedForcePassChange + '}]});',type='button') Wymuś zmiane hasła
+
+    
+	  
+
+
