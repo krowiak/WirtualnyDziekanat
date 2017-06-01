@@ -12,7 +12,7 @@ const getTeachers = '/teachers';
 const getAdmins = '/admins';
 
 function getUsers(query) {
-    const ordering = query.orderBy || [['last_name', 'ASC']]
+    const ordering = query.orderBy || [['last_name', 'ASC']];
     return users.User.findAll({
         where: query.where,
         attributes: users.publicFields,
