@@ -10,15 +10,22 @@ const connection = require('../database/connection').connection;
 const getStudents = '/students';
 const getTeachers = '/teachers';
 const getAdmins = '/admins';
-const getLimitSyntax = '/offset/:offset/limit/:limit';
 
-function getUsersOfRole(roleId, offset, limit) {
+function getUsers(query) {
+    const ordering = query.orderBy || [['last_name', 'ASC']]
     return users.User.findAll({
-        where: { role: roleId },
+        where: query.where,
         attributes: users.publicFields,
-        offset: offset,
-        limit: limit
+        offset: query.offset,
+        limit: query.limit,
+        order: ordering
     });
+}
+
+function getUsersOfRole(roleId, query) {
+    const where = query.where || {};
+    where.role = roleId;
+    return getUsers(query);
 }
 
 function getUsersByIds(ids) {
@@ -48,35 +55,28 @@ function currySendUsers(req, res) {
     return (users) => sendUsers(req, res, users);
 };
 
-router.get(['/', getLimitSyntax], function(req, res, next) {
-    users.User.findAll({ 
-        attributes: users.publicFields,
-        offset: req.params.offset,
-        limit: req.params.limit
-    }).then(curryShowUsers(req, res));
+router.get('/', function(req, res, next) {
+    getUsers(req.query)
+        .then(curryShowUsers(req, res));
 });
 
 router.get('/backend', function(req, res, next) {
-    logger.info(req.query);
-    users.User.findAll({ 
-        attributes: users.publicFields,
-        offset: req.params.offset,
-        limit: req.params.limit
-    }).then(currySendUsers(req, res));
+    getUsers(req.query)
+        .then(currySendUsers(req, res));
 });
 
-router.get([getAdmins, getAdmins + getLimitSyntax], function(req, res, next) {
-    getUsersOfRole('1', req.params.offset, req.params.limit)
+router.get(getAdmins, function(req, res, next) {
+    getUsersOfRole('1', req.query)
         .then(curryShowUsers(req, res));
 });
 
-router.get([getTeachers, getTeachers + getLimitSyntax], function(req, res, next) {
-    getUsersOfRole('2', req.params.offset, req.params.limit)
+router.get(getTeachers, function(req, res, next) {
+    getUsersOfRole('2', req.query)
         .then(curryShowUsers(req, res));
 });
 
-router.get([getStudents, getStudents + getLimitSyntax], function(req, res, next) {
-    getUsersOfRole('3', req.params.offset, req.params.limit)
+router.get(getStudents, function(req, res, next) {
+    getUsersOfRole('3', req.query)
         .then(curryShowUsers(req, res));
 });
 
