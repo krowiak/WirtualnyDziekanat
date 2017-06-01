@@ -32,7 +32,7 @@ exports.createNewSubject = function(name) {
     where: { name: trimmedName }, 
   }).spread(function(subject, created) {
     if (!created) {
-      throw new SubjectAlreadyExistsError('Użytkownik o podanej nazwie już istnieje.', subject);
+      throw new SubjectAlreadyExistsError('Przedmiot o podanej nazwie już istnieje.', subject);
     }
     
     return subject;
