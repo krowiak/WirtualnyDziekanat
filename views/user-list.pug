@@ -1,27 +1,38 @@
 extends layout
 
+
 block content
+	script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js')
+	script(src='/scripts/searchScript.js')
+	
+	.row
+		.col-lg-6
+			.input-group
+				input#searchText.form-control(type='text', placeholder='Search for...')
+				span.input-group-btn
+					button#searchbtn.btn.btn-default(type='button') Search!
 	table.table
 		thead.thead-inverse
-		tr
-			th id
-			th First Name
-			th Last Name
-			th Lock
-			th Password Change
-		tbody
-		each user in users
-			- let userId = user.id;
-			- let changedUserLocked = !user.locked;
-			- let changedForcePassChange = !user.forcePasswordChange;
 			tr
-				td #{user.id}
-				td #{user.firstName}
-				td #{user.lastName}
-				td
-					button.btn.btn-warning(onClick='$.post("changeUsers", {changes: [{id: ' + userId + ', locked: ' + changedUserLocked + '}]});',type='button') Zablokuj
-				td
-					button.btn.btn-danger(onClick='$.post("changeUsers", {changes: [{id: ' + userId + ', forcePasswordChange: ' + changedForcePassChange + '}]});',type='button') Wymuś zmiane hasła
+				th id
+				th First Name
+				th Last Name
+				th Lock
+				th Password Change
+		tbody
+			each user in users
+				- let userId = user.id;
+				- let changedUserLocked = !user.locked;
+				- let changedForcePassChange = !user.forcePasswordChange;
+				tr
+					td #{user.id}
+					td #{user.firstName}
+					td #{user.lastName}
+					td
+						button.btn.btn-warning(onClick='$.post("list/changeUsers", {changes: [{id: ' + userId + ', locked: ' + changedUserLocked + '}]});',type='button') Zablokuj
+					td
+						button.btn.btn-danger(onClick='$.post("list/changeUsers", {changes: [{id: ' + userId + ', forcePasswordChange: ' + changedForcePassChange + '}]});',type='button') Wymuś zmiane hasła
+
 
     
 	  
