@@ -31,6 +31,15 @@ function getUsersByIds(ids) {
     });
 }
 
+function showUsers(req, res, users) {
+    req.viewData.users = users;
+    res.render('user-list', req.viewData);
+};
+
+function curryShowUsers(req, res, users) {
+    return (users) => showUsers(req, res, users);
+};
+
 function sendUsers(req, res, users) {
     res.send(users);
 };
@@ -44,33 +53,31 @@ router.get(['/', getLimitSyntax], function(req, res, next) {
         attributes: users.publicFields,
         offset: req.params.offset,
         limit: req.params.limit
-    }).then(currySendUsers(req, res));
+    }).then(curryShowUsers(req, res));
 });
 
-router.get('/frontend', function(req, res, next) {
+router.get('/backend', function(req, res, next) {
+    logger.info(req.query);
     users.User.findAll({ 
         attributes: users.publicFields,
         offset: req.params.offset,
         limit: req.params.limit
-    }).then((users) => {
-        req.viewData.users = users;
-        res.render('user-list', req.viewData);
-    });
+    }).then(currySendUsers(req, res));
 });
 
 router.get([getAdmins, getAdmins + getLimitSyntax], function(req, res, next) {
     getUsersOfRole('1', req.params.offset, req.params.limit)
-        .then(currySendUsers(req, res));
+        .then(curryShowUsers(req, res));
 });
 
 router.get([getTeachers, getTeachers + getLimitSyntax], function(req, res, next) {
     getUsersOfRole('2', req.params.offset, req.params.limit)
-        .then(currySendUsers(req, res));
+        .then(curryShowUsers(req, res));
 });
 
 router.get([getStudents, getStudents + getLimitSyntax], function(req, res, next) {
     getUsersOfRole('3', req.params.offset, req.params.limit)
-        .then(currySendUsers(req, res));
+        .then(curryShowUsers(req, res));
 });
 
 router.post('/changeUsers', function(req, res, next) {
