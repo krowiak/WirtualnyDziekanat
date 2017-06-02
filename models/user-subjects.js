@@ -3,10 +3,12 @@
 const Sequelize = require('sequelize');
 const connection = require("../database/connection").connection;
 const user = require('./user');
+const userRoles = require('./user-roles');
 const subject = require('./subject');
 const SubjectDoesNotExistError = require("./errors/subject-does-not-exist");
 const UserDoesNotExistError = require("./errors/user-does-not-exist");
 const logger = require('winston');
+const CannotAssignRoleToSubjectError = require("./errors/cannot-assign-role-to-subject");
 
 const thisTableName = 'user_subjects';
 
@@ -19,8 +21,8 @@ const definition = connection.define(thisTableName, {
     freezeTableName: true,
     underscored: true
   });
-user.User.belongsToMany(subject.Subject, {through: thisTableName, otherKey: 'userId'});
-subject.Subject.belongsToMany(user.User, {through: thisTableName, otherKey: 'subjectId'});
+user.User.belongsToMany(subject.Subject, {through: thisTableName, foreignKey: 'userId', otherKey: 'subjectId'});
+subject.Subject.belongsToMany(user.User, {through: thisTableName, foreignKey: 'subjectId', otherKey: 'userId'});
 
 exports.UserSubjects = definition;
 
@@ -28,7 +30,7 @@ function ensureExistThen(subjectId, userId, then) {
   return subject.Subject.findOne({where: { id: subjectId }})
     .then((subject) => {
       if (subject) {
-        user.User.findOne({ where: {id: userId }})
+        return user.User.findOne({ where: {id: userId }})
           .then((user) => {
             if (user) {
               return then(subject, user);
@@ -44,7 +46,15 @@ function ensureExistThen(subjectId, userId, then) {
 
 exports.add = function (subjectId, userId) {
   return ensureExistThen(subjectId, userId, (subject, user) => {
-    definition.findOrCreate({
+
+    if (user.role !== userRoles.Student && user.role !== userRoles.Teacher) {
+      throw new CannotAssignRoleToSubjectError('Tylko studenci i nauczyciele mogą być przypisywani do przedmiotów.', userId, user.role);
+    }
+    
+    //definition.create({}).then((x) => user.addUserSubjects(x).then((_) => x)).then((y) => subject.addUserSubjects(y).then((_) => y)).then(z => z.save());
+    //return user.addSubject(subject, { through: {} });
+    
+    return definition.findOrCreate({
       where: {
         userId: userId,
         subjectId: subjectId

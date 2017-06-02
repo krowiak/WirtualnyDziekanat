@@ -11,6 +11,7 @@ const SubjectAlreadyExistsError = require('../models/errors/subject-already-exis
 const SequelizeValidationError = require('sequelize').ValidationError;
 const SubjectDoesNotExistError = require("../models/errors/subject-does-not-exist");
 const UserDoesNotExistError = require("../models/errors/user-does-not-exist");
+const CannotAssignRoleToSubjectError = require("../models/errors/cannot-assign-role-to-subject");
 const logger = require('winston');
 const s = require('sprintf-js');
 const connection = require('../database/connection').connection;
@@ -66,7 +67,6 @@ router.get('/', function(req, res, next) {
         .then(curryShowSubjects(req, res));
 });
 
-//CO?>?
 router.get('/:subjectId', function(req, res, next) {
     getSubjectsByIds([req.params.subjectId])
         .then(curryShowSubject(req, res));
@@ -82,7 +82,6 @@ function showSubject(req, res, subject){
     else
         res.send({ type: 'warning', message: "Wrong subject id"});
 }
-// koniec CO?>?
 
 router.get('/backend', function(req, res, next) {
     getSubjects(req.query)
@@ -163,16 +162,11 @@ router.post('/change-subjects', function(req, res, next) {
 router.post('/assign-users', function(req, res, next) {
     const subjectId = req.body.subjectId;
     const userIds = req.body.users;
-    logger.info(subjectId);
-    logger.info(userIds);
-    logger.info(req.body);
     
     connection.transaction((transaction) => {
-        const associations = userIds
-            .map((userId) => userSubjects.add(subjectId, userId));
-        // Pomysł był dobry, ale nie działa, nie rzuca wyjatku i wszystko się commituje
-        return Promise.all(associations);
+        return Promise.map(userIds, (userId) => userSubjects.add(subjectId, userId));
     }).then((_) => {
+        logger.info('Użytkownicy przypisani do przedmiotu');
         const message = userIds.length == 1 ?
             'Użytkownik został przypisany do przedmiotu.' :
             'Użytkownicy zostali przypisani do przedmiotu.';
@@ -183,6 +177,8 @@ router.post('/assign-users', function(req, res, next) {
     }).catch(UserDoesNotExistError, function (err) {
         logger.warn('Przypisywanie uzytkowników do przedmiotu - użytkownik %s nie istnieje.', err.userId);
         res.send({ type: 'error', message: 'Co najmniej jeden z podanych użytkowników nie istnieje.' });
+    }).catch(CannotAssignRoleToSubjectError, function(err) {
+        res.send({ type: 'error', message: err.message });
     }).catch(function (err) {
         logger.error('Przypisywanie uzytkowników do przedmiotu - błąd: %s', err);
         res.send({ type: 'error', message: 'Błąd przypisywania użytkownika do przedmiotu. Spróbuj ponownie za jakiś czas.' });
@@ -211,6 +207,18 @@ router.post('/remove-users', function(req, res, next) {
         logger.error('Usuwanie użytkowników z przedmiotu - błąd: %s', err);
         res.send({ type: 'error', message: 'Błąd wypisywania użytkownika z przedmiotu. Spróbuj ponownie za jakiś czas.' });
     });
+});
+
+router.get('/users/:subjectId', function(req, res, next) {
+    getSubjectsByIds([req.params.subjectId])
+        .then((subjects) => subjects[0].getUsers())
+        .then((userList) => userList.map(user => users.extractPublicFields(user)))
+        .then((userList) => res.send(userList));
+});
+
+router.get('/:subjectId', function(req, res, next) {
+    req.viewData.user = {id:555};
+    res.render('subject-editor', req.viewData);
 });
 
 module.exports = router;
