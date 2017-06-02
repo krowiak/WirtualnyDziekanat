@@ -42,6 +42,14 @@ const definition = connection.define('subjects', {
 
 exports.Subject = definition;
 exports.publicFields = [ 'id', 'name', 'year', 'term' ];
+exports.extractPublicFields = function (subject) {
+  return {
+    id: subject.id,
+    name: subject.name,
+    year: subject.year,
+    term: subject.term
+  };
+}
 
 exports.createNewSubject = function(subjectData) {
   const trimmedName = subjectData.name.trim();

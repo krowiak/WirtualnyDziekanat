@@ -62,7 +62,6 @@ function currySendSubjects(req, res) {
 };
 
 router.get('/', function(req, res, next) {
-
     getSubjects(req.query)
         .then(curryShowSubjects(req, res));
 });

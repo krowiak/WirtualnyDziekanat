@@ -21,6 +21,8 @@ const registration = require('./controllers/registration');
 const userLists = require('./controllers/user-list');
 const password = require('./controllers/password');
 const subjectLists = require('./controllers/subject-list');
+const subjectListsTeacher = require('./controllers/subject-list-teacher');
+const subjectListsStudent = require('./controllers/subject-list-student');
 
 
 const app = express();
@@ -76,18 +78,20 @@ app.use('/tajemnice', auth.authenticate());
 app.use('/tajemnice', tajemnice);
 
 // Strony tylko dla administratorów
-app.use('/admin', auth.authenticate());
-app.use('/admin', auth.authorize('1'));
+//app.use('/admin', auth.authenticate());
+//app.use('/admin', auth.authorize('1'));
 app.use('/admin/list', userLists);
 app.use('/admin/subjects', subjectLists)
 
 // Strony tylko dla nauczycieli
 app.use('/teacher', auth.authenticate());
 app.use('/teacher', auth.authorize('2'));
+app.use('/teacher/subjects', subjectListsTeacher);
 
 // Strony tylko dla studentów
 app.use('/student', auth.authenticate());
 app.use('/student', auth.authorize('3'));
+app.use('/student/subjects', subjectListsStudent);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

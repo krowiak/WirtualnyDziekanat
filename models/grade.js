@@ -2,9 +2,13 @@
 
 const Sequelize = require('sequelize');
 const connection = require("../database/connection").connection;
-const userSubjects = require('./user-subjects').UserSubjects;
+const user = require('./user');
+const userRoles = require('./user-roles');
+const subject = require('./subject');
+const GradeTargetInvalidError = require('./errors/grade-target-invalid');
+const GradeAlreadyExistsError = require('./errors/grade-already-exists');
 
-const grade = connection.define('grade', {
+const gradeDef = connection.define('grade', {
   id: {
       type: Sequelize.INTEGER,
       autoIncrement: true,
@@ -25,11 +29,67 @@ const grade = connection.define('grade', {
           min: 2,
           max: 5
       }
-  }
+  },
+  
 }, {
     freezeTableName: true,
     underscored: true
   });
-grade.belongsTo(userSubjects, {foreignKey: 'user_subject_id'});
+gradeDef.belongsTo(user.User, {foreignKey: 'userId'});
+user.User.hasOne(gradeDef, {otherKey: 'userId'});
+gradeDef.belongsTo(subject.Subject, {foreignKey: 'subjectId'});
+subject.Subject.hasOne(gradeDef, {otherKey: 'subjectId'});
 
-exports.Grade = grade;
+exports.Grade = gradeDef;
+exports.publicFields = [ 'id', 'attempt', 'grade', 'userId', 'subjectId' ];
+
+exports.extractPublicFields = function (grade) {
+  return {
+    id: grade.id,
+    attempt: grade.attempt,
+    grade: grade.grade,
+    userId: grade.userId,
+    subjectId: grade.subjectId
+  };
+}
+
+
+function getUserAndSubject(userId, subjectId) {
+  return user.User.findOne({ 
+    where: {id: userId },
+    include: [{
+        model: subject.Subject,
+        where: { id: subjectId }
+    }]
+  }).then((user) => {
+    if (user) {
+      return user.getSubjects({ where: { id: subjectId }})
+        .then((subject => [user, subject]));
+    } else {
+      throw new GradeTargetInvalidError('Podany użytkownik nie jest przypisany do podanego przedmiotu.',
+        userId, subjectId);
+    }
+  });
+}
+
+exports.addGrade = function (userId, subjectId, grade, attempt) {
+  return getUserAndSubject(userId, subjectId).spread((user, subject) => {
+    return gradeDef.findOrCreate({
+      where: { 
+        userId: userId,
+        subjectId: subjectId,
+        attempt: attempt
+      },
+      defaults: {
+        grade: grade
+      }
+    }).spread((grade, created) => {
+      if (!created) {
+        throw new GradeAlreadyExistsError('Podany uzytkownik otrzymał już ocenę z tego przedmiotu w danym terminie.',
+          userId, subjectId, attempt);
+      }
+      
+      return grade;
+    });
+  });
+};
