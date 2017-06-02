@@ -11,7 +11,7 @@ block content
 				input#searchText.form-control(type='text', placeholder='Search for...')
 				span.input-group-btn
 					button#searchbtn.btn.btn-default(type='button') Search!
-	table.table
+	table#userTable.table
 		thead.thead-inverse
 			tr
 				th id
@@ -29,9 +29,9 @@ block content
 					td #{user.firstName}
 					td #{user.lastName}
 					td
-						button.btn.btn-warning(onClick='$.post("list/changeUsers", {changes: [{id: ' + userId + ', locked: ' + changedUserLocked + '}]});',type='button') Zablokuj
+						button.btn.btn-warning(onClick='$.post("list/changeUsers", {changes: [{id: ' + userId + ', locked: ' + changedUserLocked + '}]});',type='button') Block
 					td
-						button.btn.btn-danger(onClick='$.post("list/changeUsers", {changes: [{id: ' + userId + ', forcePasswordChange: ' + changedForcePassChange + '}]});',type='button') Wymuś zmiane hasła
+						button.btn.btn-danger(onClick='$.post("list/changeUsers", {changes: [{id: ' + userId + ', forcePasswordChange: ' + changedForcePassChange + '}]});',type='button') Force password change
 
 
     

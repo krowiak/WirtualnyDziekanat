@@ -9,17 +9,15 @@ $(document).ready(function () {
   
 });
 
-
-
 function createTable(users){
-	$(".table tbody").empty();
+	$("#userTable tbody").empty();
 	for(i=0;i<users.length;i++){
-			    $('.table tbody').append( '<tr><td>'+ users[i].id +'</td>' +'<td>' 
+			    $('#userTable tbody').append( '<tr><td>'+ users[i].id +'</td>' +'<td>' 
 											    	+ users[i].firstName+'</td>'+'<td>' 
 											    	+ users[i].lastName+'</td>'+'<td>'
-											    	+ '<button onClick="blockUser('+i+')" type="button" class="btn btn-warning">'+(users[i].locked?'Odblokuj':'Zablokuj')+
+											    	+ '<button onClick="blockUser('+i+')" type="button" class="btn btn-warning">'+(users[i].locked?'Unlock':'Block')+
 											    	'</button></td><td>'+ 
-											    	'<button onClick="forcePasswordChange('+i+')" type="button" class="btn btn-danger">'+(users[i].forcePasswordChange?'Odwołaj zmianę':'Wymuś zmianę')+
+											    	'<button onClick="forcePasswordChange('+i+')" type="button" class="btn btn-danger">'+(users[i].forcePasswordChange?'Nevermind':'Force password change')+
 											    	'</button></td></tr>' );
 	}
 }
@@ -60,4 +58,16 @@ function getUsers(text){
 	        //Do alert is error
 	    }
 	});
+}
+
+function asignToSubject(index){
+
+}
+
+function removeFromSubject(index){
+
+}
+
+function getSubjectInfo(){
+
 }

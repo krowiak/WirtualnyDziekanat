@@ -44,6 +44,7 @@ function getSubjectsByIds(ids) {
 
 function showSubjects(req, res, subjects) {
     req.viewData.subjects = subjects;
+    req.viewData.terms = [{'id': 1, 'name': 'zimowy'}, {'id': 2, 'name': 'letni'}];
     res.render('subject-list', req.viewData);
 };
 

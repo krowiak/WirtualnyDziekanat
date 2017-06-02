@@ -16,6 +16,28 @@ block content
       .panel-body
         form(name='admin/subjects/add-subject' method='POST' action='/admin/subjects/add-subject')
           div.form-group
-            label(for='name') Nazwa:
+            label(for='name') Name:
             input#name.form-control(type='text' name='name')
+            label(for='year') Year:
+            input#name.form-control(type='text' name='year')
+            label(for='term') Term:
+            select#terms.select.form-control(name='term')
+              each term in terms
+                option(value=term.id) #{term.name}
+            
           button.btn.btn-primary(type='submit' enctype='application/x-www-form-urlencoded') Dodaj
+
+  table#subjectTable.table
+    thead.thead-inverse
+      tr
+        th id
+        th Name
+        th Year
+        th Term
+    tbody
+      each subject in subjects
+        tr
+          td #{subject.id}
+          td #{subject.name}
+          td #{subject.year}
+          td #{subject.term}
