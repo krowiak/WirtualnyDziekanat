@@ -216,9 +216,4 @@ router.get('/users/:subjectId', function(req, res, next) {
         .then((userList) => res.send(userList));
 });
 
-router.get('/:subjectId', function(req, res, next) {
-    req.viewData.user = {id:555};
-    res.render('subject-editor', req.viewData);
-});
-
 module.exports = router;
