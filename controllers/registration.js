@@ -25,7 +25,7 @@ router.get('/', function(req, res, next) {
 router.post('/', function(req, res, next) {
   const pass1 = req.body.password,
     pass2 = req.body['verify-password'];
-  
+
   if (pass1 === pass2) {
     Users.createNewUser({
       firstName: req.body.firstname,

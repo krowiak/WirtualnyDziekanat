@@ -66,11 +66,6 @@ router.get('/', function(req, res, next) {
         .then(curryShowSubjects(req, res));
 });
 
-router.get('/:subjectId', function(req, res, next) {
-    req.viewData.user = {id:555};
-    res.render('subject-editor', req.viewData);
-});
-
 router.get('/backend', function(req, res, next) {
     getSubjects(req.query)
         .then(currySendSubjects(req, res));
@@ -195,6 +190,18 @@ router.post('/remove-users', function(req, res, next) {
         logger.error('Usuwanie użytkowników z przedmiotu - błąd: %s', err);
         res.send({ type: 'error', message: 'Błąd wypisywania użytkownika z przedmiotu. Spróbuj ponownie za jakiś czas.' });
     });
+});
+
+router.get('/users/:subjectId', function(req, res, next) {
+    getSubjectsByIds([req.params.subjectId])
+        .then((subjects) => subjects[0].getUsers())
+        .then((userList) => userList.map(user => users.extractPublicFields(user)))
+        .then((userList) => res.send(userList));
+});
+
+router.get('/:subjectId', function(req, res, next) {
+    req.viewData.user = {id:555};
+    res.render('subject-editor', req.viewData);
 });
 
 module.exports = router;

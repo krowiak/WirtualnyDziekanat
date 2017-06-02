@@ -21,8 +21,8 @@ const definition = connection.define(thisTableName, {
     freezeTableName: true,
     underscored: true
   });
-user.User.belongsToMany(subject.Subject, {through: thisTableName, otherKey: 'userId'});
-subject.Subject.belongsToMany(user.User, {through: thisTableName, otherKey: 'subjectId'});
+user.User.belongsToMany(subject.Subject, {through: thisTableName, foreignKey: 'userId', otherKey: 'subjectId'});
+subject.Subject.belongsToMany(user.User, {through: thisTableName, foreignKey: 'subjectId', otherKey: 'userId'});
 
 exports.UserSubjects = definition;
 
@@ -51,7 +51,17 @@ exports.add = function (subjectId, userId) {
       throw new CannotAssignRoleToSubjectError('Tylko studenci i nauczyciele mogą być przypisywani do przedmiotów.', userId, user.role);
     }
     
-    return user.addSubject(subject);
+    //definition.create({}).then((x) => user.addUserSubjects(x).then((_) => x)).then((y) => subject.addUserSubjects(y).then((_) => y)).then(z => z.save());
+    //return user.addSubject(subject, { through: {} });
+    
+    return definition.findOrCreate({
+      where: {
+        userId: userId,
+        subjectId: subjectId
+      }
+    }).spread((association, created) => {
+      return {created: created, association: association};
+    });
   });
 };
 
