@@ -61,14 +61,28 @@ function currySendSubjects(req, res) {
 };
 
 router.get('/', function(req, res, next) {
+
     getSubjects(req.query)
         .then(curryShowSubjects(req, res));
 });
 
+//CO?>?
 router.get('/:subjectId', function(req, res, next) {
-    req.viewData.user = {id:555};
-    res.render('subject-editor', req.viewData);
+    getSubjectsByIds([req.params.subjectId])
+        .then(curryShowSubject(req, res));
 });
+
+function curryShowSubject(req,res, subject){
+    return (subject) => showSubject(req, res, subject);
+}
+function showSubject(req, res, subject){
+    req.viewData.subject = subject[0];
+    if(subject[0])
+        res.render('subject-editor', req.viewData);
+    else
+        res.send({ type: 'warning', message: "Wrong subject id"});
+}
+// koniec CO?>?
 
 router.get('/backend', function(req, res, next) {
     getSubjects(req.query)

@@ -2,8 +2,8 @@ extends layout
 
 block content
   script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js')
-  script(src='/scripts/searchScript.js')
-  h1 subject.name
+  script(src='/scripts/asignScript.js')
+  h1(data-internalid=''+subject.id) #{subject.name}
   .row    
     .col-lg-4 
       .row
@@ -12,7 +12,7 @@ block content
             input#searchText.form-control(type='text', placeholder='Search for...')
             span.input-group-btn
               button#searchbtn.btn.btn-default(type='button') Search!
-      table.table
+      table#userTable.table
         thead.thead-inverse
           tr
             th id
@@ -20,15 +20,9 @@ block content
             th Last name
             th Asign
         tbody
-          tr
-            td #{user.id}
-            td #{user.firstName}
-            td #{user.lastName}
-            td
-              button.btn.btn-info(type='button') Asign
     .col-lg-8(style="background-color: #eaeaea;")
       h1 Teachers
-      table.table
+      table#asignedTeachersTable.table
         thead.thead-inverse
           tr
             th id
