@@ -65,6 +65,11 @@ router.get('/', function(req, res, next) {
         .then(curryShowSubjects(req, res));
 });
 
+router.get('/:subjectId', function(req, res, next) {
+    req.viewData.user = {id:555};
+    res.render('subject-editor', req.viewData);
+});
+
 router.get('/backend', function(req, res, next) {
     getSubjects(req.query)
         .then(currySendSubjects(req, res));
