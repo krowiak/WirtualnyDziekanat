@@ -5,6 +5,7 @@ const users = require("../models/user");
 const subjects = require("../models/subject");
 const userSubjects = require("../models/user-subjects");
 const grades = require("../models/grade");
+const message = require("../models/message");
 
 connection.drop();
 connection.sync({force: true}).then(() =>
