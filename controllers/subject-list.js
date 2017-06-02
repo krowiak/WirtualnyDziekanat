@@ -11,6 +11,7 @@ const SubjectAlreadyExistsError = require('../models/errors/subject-already-exis
 const SequelizeValidationError = require('sequelize').ValidationError;
 const SubjectDoesNotExistError = require("../models/errors/subject-does-not-exist");
 const UserDoesNotExistError = require("../models/errors/user-does-not-exist");
+const CannotAssignRoleToSubjectError = require("../models/errors/cannot-assign-role-to-subject");
 const logger = require('winston');
 const s = require('sprintf-js');
 const connection = require('../database/connection').connection;
@@ -149,16 +150,11 @@ router.post('/change-subjects', function(req, res, next) {
 router.post('/assign-users', function(req, res, next) {
     const subjectId = req.body.subjectId;
     const userIds = req.body.users;
-    logger.info(subjectId);
-    logger.info(userIds);
-    logger.info(req.body);
     
     connection.transaction((transaction) => {
-        const associations = userIds
-            .map((userId) => userSubjects.add(subjectId, userId));
-        // Pomysł był dobry, ale nie działa, nie rzuca wyjatku i wszystko się commituje
-        return Promise.all(associations);
+        return Promise.map(userIds, (userId) => userSubjects.add(subjectId, userId));
     }).then((_) => {
+        logger.info('Użytkownicy przypisani do przedmiotu');
         const message = userIds.length == 1 ?
             'Użytkownik został przypisany do przedmiotu.' :
             'Użytkownicy zostali przypisani do przedmiotu.';
@@ -169,6 +165,8 @@ router.post('/assign-users', function(req, res, next) {
     }).catch(UserDoesNotExistError, function (err) {
         logger.warn('Przypisywanie uzytkowników do przedmiotu - użytkownik %s nie istnieje.', err.userId);
         res.send({ type: 'error', message: 'Co najmniej jeden z podanych użytkowników nie istnieje.' });
+    }).catch(CannotAssignRoleToSubjectError, function(err) {
+        res.send({ type: 'error', message: err.message });
     }).catch(function (err) {
         logger.error('Przypisywanie uzytkowników do przedmiotu - błąd: %s', err);
         res.send({ type: 'error', message: 'Błąd przypisywania użytkownika do przedmiotu. Spróbuj ponownie za jakiś czas.' });

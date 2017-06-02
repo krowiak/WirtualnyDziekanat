@@ -3,10 +3,12 @@
 const Sequelize = require('sequelize');
 const connection = require("../database/connection").connection;
 const user = require('./user');
+const userRoles = require('./user-roles');
 const subject = require('./subject');
 const SubjectDoesNotExistError = require("./errors/subject-does-not-exist");
 const UserDoesNotExistError = require("./errors/user-does-not-exist");
 const logger = require('winston');
+const CannotAssignRoleToSubjectError = require("./errors/cannot-assign-role-to-subject");
 
 const thisTableName = 'user_subjects';
 
@@ -28,7 +30,7 @@ function ensureExistThen(subjectId, userId, then) {
   return subject.Subject.findOne({where: { id: subjectId }})
     .then((subject) => {
       if (subject) {
-        user.User.findOne({ where: {id: userId }})
+        return user.User.findOne({ where: {id: userId }})
           .then((user) => {
             if (user) {
               return then(subject, user);
@@ -44,14 +46,12 @@ function ensureExistThen(subjectId, userId, then) {
 
 exports.add = function (subjectId, userId) {
   return ensureExistThen(subjectId, userId, (subject, user) => {
-    definition.findOrCreate({
-      where: {
-        userId: userId,
-        subjectId: subjectId
-      }
-    }).spread((association, created) => {
-      return {created: created, association: association};
-    });
+
+    if (user.role !== userRoles.Student && user.role !== userRoles.Teacher) {
+      throw new CannotAssignRoleToSubjectError('Tylko studenci i nauczyciele mogą być przypisywani do przedmiotów.', userId, user.role);
+    }
+    
+    return user.addSubject(subject);
   });
 };
 

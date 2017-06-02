@@ -7,3 +7,6 @@ const role = {
 };
 
 exports.Roles = role;
+exports.Admin = '1';
+exports.Teacher = '2';
+exports.Student = '3';
