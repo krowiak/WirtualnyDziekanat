@@ -36,9 +36,9 @@ const gradeDef = connection.define('grade', {
     underscored: true
   });
 gradeDef.belongsTo(user.User, {foreignKey: 'userId'});
-user.User.hasOne(gradeDef, {otherKey: 'userId'});
+user.User.hasMany(gradeDef, {foreignKey: 'userId'});
 gradeDef.belongsTo(subject.Subject, {foreignKey: 'subjectId'});
-subject.Subject.hasOne(gradeDef, {otherKey: 'subjectId'});
+subject.Subject.hasMany(gradeDef, {foreignKey: 'subjectId'});
 
 exports.Grade = gradeDef;
 exports.publicFields = [ 'id', 'attempt', 'grade', 'userId', 'subjectId' ];
@@ -74,6 +74,11 @@ function getUserAndSubject(userId, subjectId) {
 
 exports.addGrade = function (userId, subjectId, grade, attempt) {
   return getUserAndSubject(userId, subjectId).spread((user, subject) => {
+    if (user.role !== userRoles.Student) {
+      throw new GradeTargetInvalidError('Tylko studenci mogą otrzymywać oceny z przedmiotów.',
+        userId, subjectId);
+    }
+    
     return gradeDef.findOrCreate({
       where: { 
         userId: userId,

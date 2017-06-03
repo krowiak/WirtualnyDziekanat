@@ -8,11 +8,28 @@ const grades = require("../models/grade");
 const message = require("../models/message");
 
 connection.drop();
-connection.sync({force: true}).then(() =>
-    users.createNewUser({
+connection.sync({force: true})
+    .then(() => users.createNewUser({
         password: "admin",
         email: "admin@us.pl",
         firstName: "Sknerus",
         lastName: "McKwacz",
         role: "1"
-    }));
+    })).then(() => users.createNewUser({
+        password: "naucz",
+        email: "naucz@us.pl",
+        firstName: "Ciasteczkowy",
+        lastName: "Potwór",
+        role: "2"
+    })).then(() => users.createNewUser({
+        password: "stude",
+        email: "stude@us.pl",
+        firstName: "Miku",
+        lastName: "Hatsune",
+        role: "3"
+    })).then(() => subjects.createNewSubject({
+        name: "Projekt Zespołowy", 
+        year: 2016, 
+        term: 2 
+    })).then(() => userSubjects.add(1, 2))
+    .then(() => userSubjects.add(1, 3));
