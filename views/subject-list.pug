@@ -34,6 +34,7 @@ block content
         th Name
         th Year
         th Term
+        th Asign People
     tbody
       each subject in subjects
         tr
@@ -41,3 +42,5 @@ block content
           td #{subject.name}
           td #{subject.year}
           td #{subject.term}
+          td 
+            a.btn.btn-success(href=""+subject.id) Asign someone
