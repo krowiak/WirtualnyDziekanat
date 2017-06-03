@@ -31,15 +31,13 @@ function sendSubjects(res, subjects) {
     res.send(subjects);
 }
 
-
-function cleanSubjectsData(subjectArray) {
+function removeUserData(subjectArray) {
     const results = [];
     for (let i = 0; i < subjectArray.length; i++)
     {
         let subject = subjectArray[i];
         let cleanSubject = subjects.extractPublicFields(subject);
-        //cleanSubject.users = subject.users.map(users.extractPublicFields);
-        //cleanSubject.grades = subject.grades.map(grades.extractPublicFields);
+        cleanSubject.grades = subject.grades;
         results.push(cleanSubject);
     }
     return results;
@@ -47,7 +45,7 @@ function cleanSubjectsData(subjectArray) {
 
 router.get('/', function(req, res, next) {
     getSubjects(req.query, req.user.id)
-        .then(cleanSubjectsData)
+        .then(removeUserData)
         .then((subjects) => sendSubjects(res, subjects));
 });
 
