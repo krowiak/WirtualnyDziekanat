@@ -23,7 +23,7 @@ const definition = connection.connection.define('applications', {
     }
   },
   body: {
-    type: Sequelize.STRING,
+    type: Sequelize.TEXT,
     allowNull: false,
     validate: {
       notEmpty: { msg: 'Treść podania musi zostać uzupełniona.' },
