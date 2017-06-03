@@ -126,6 +126,7 @@ exports.createNewUser = function (userData) {
       return user;
     });
 };
+
 exports.login = function (email, password) {
     return definition.find(
       { where: { email: email } } 
@@ -146,8 +147,9 @@ exports.login = function (email, password) {
         {
           throw new LoginFailedError('Użytkownik o podanej nazwie nie istnieje.');
         }
-    })
+    });
 };
+
 exports.generatePassResetToken = function (user) {
   passResetTokens.generate().then((token) => {
     const oneHourInMs = 60*60*1000;
@@ -161,7 +163,8 @@ exports.generatePassResetToken = function (user) {
       logger.warn('Błąd podczas generowania tokenu resetowania hasła: %s', err);
       throw err;
   });
-}
+};
+
 exports.changePassword = function (user, newPassword) {
     const passValidation = passwordValidation.validatePassword(newPassword);
     if (passValidation.success) {
@@ -181,4 +184,4 @@ exports.changePassword = function (user, newPassword) {
       logger.warn('Hasło niepoprawne: %s', passValidation);
       return Promise.reject(new InvalidPasswordError(passValidation.message));
     }
-}
+};

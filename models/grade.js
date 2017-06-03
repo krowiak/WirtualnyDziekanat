@@ -7,6 +7,7 @@ const userRoles = require('./user-roles');
 const subject = require('./subject');
 const GradeTargetInvalidError = require('./errors/grade-target-invalid');
 const GradeAlreadyExistsError = require('./errors/grade-already-exists');
+const GradeDoesNotExistError = require('./errors/grade-does-not-exist');
 
 const gradeDef = connection.define('grade', {
   id: {
@@ -96,5 +97,23 @@ exports.addGrade = function (userId, subjectId, grade, attempt) {
       
       return grade;
     });
+  });
+};
+
+exports.updateGrade = function (userId, subjectId, attempt, newGrade) {
+  return gradeDef.findOne({
+    where: {
+      userId: userId,
+      subjectId: subjectId,
+      attempt: attempt
+    }
+  }).then((grade) => {
+    if (grade) {
+      grade.grade = newGrade;
+      return grade.save();
+    } else {
+      throw new GradeDoesNotExistError('Wskazana ocena nie istnieje.', 
+        userId, subjectId, attempt);
+    }
   });
 };
