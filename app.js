@@ -81,7 +81,7 @@ app.use('/tajemnice', tajemnice);
 app.use('/admin', auth.authenticate());
 app.use('/admin', auth.authorize('1'));
 app.use('/admin/list', userLists);
-app.use('/admin/subjects', subjectLists)
+app.use('/admin/subjects', subjectLists);
 
 // Strony tylko dla nauczycieli
 app.use('/teacher', auth.authenticate());
