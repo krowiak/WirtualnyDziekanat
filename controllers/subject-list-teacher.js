@@ -50,6 +50,10 @@ function addUserData(subjectArray) {
 }
 
 router.get('/', function(req, res, next) {
+    res.render('teacher-subjects', req.viewData);
+});
+
+router.get('/mysubjects', function(req, res, next) {
     getSubjects(req.query, req.user.id)
         .then(addUserData)
         .then((subjects) => sendSubjects(res, subjects));
