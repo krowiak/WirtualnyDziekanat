@@ -28,7 +28,7 @@ function showSubject(index){
 			$('#asignedStudentsTable tbody').append( '<tr><td>'+ Subjects[index].users[i].id +'</td>' +'<td>' 
 											    + Subjects[index].users[i].firstName+'</td>'+'<td>' 
 											    + Subjects[index].users[i].lastName+'</td>'+'<td>'
-											    +'<input id="fstAttempt" type="number" name="quantity" min="0" max="5" step="0.5" class="form-control" placeholder="'+Subjects[index].users[i].grades[1].grade+'">'+'</td><td>'
+											    +'<input id="fstAttempt" type="number" name="quantity" min="0" max="5" step="0.5" class="form-control" placeholder="'+/*Subjects[index].users[i].grades[0].grade+*/'">'+'</td><td>'
 											    +'<input id="scndAttempt"type="number" name="quantity" min="0" max="5" step="0.5" class="form-control" placeholder="">'+'</td><td>'
 											    + '<button onClick="saveGrades('+i+')" type="button" class="btn btn-success">Save'+
 											    '</button></td></tr>' );	
