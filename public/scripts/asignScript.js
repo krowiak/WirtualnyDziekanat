@@ -71,12 +71,18 @@ function getUsers(text){
 	});
 }
 
+function showMessage(msg){
+	$('.alert').first().remove();
+	$('.container').first().prepend('<div class="alert alert-info">'+msg+'</div>');
+}
+
 function asignToSubject(index){
 	$.ajax({
 	  	type: "POST",
 	  	url: "assign-users",
 	  	data: {users: [Users[index].id], subjectId: $( "h1" ).attr("data-internalid")},
-	  	success: function(data) {   
+	  	success: function(data) { 
+	  		showMessage(data.message);  
 	  		getSubjectInfo();  
 	    },
 	});
@@ -87,7 +93,8 @@ function removeFromSubject(index){
 	  	type: "POST",
 	  	url: "remove-users",
 	  	data: {users: [Asigned[index].id], subjectId: $( "h1" ).attr("data-internalid")},
-	  	success: function(data) {   
+	  	success: function(data) { 
+	  		showMessage(data.message);    
 	  		getSubjectInfo();
 	    },
 	});
