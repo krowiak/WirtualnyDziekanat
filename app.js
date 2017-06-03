@@ -78,8 +78,8 @@ app.use('/tajemnice', auth.authenticate());
 app.use('/tajemnice', tajemnice);
 
 // Strony tylko dla administratorów
-//app.use('/admin', auth.authenticate());
-//app.use('/admin', auth.authorize('1'));
+app.use('/admin', auth.authenticate());
+app.use('/admin', auth.authorize('1'));
 app.use('/admin/list', userLists);
 app.use('/admin/subjects', subjectLists)
 
