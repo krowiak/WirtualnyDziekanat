@@ -45,19 +45,19 @@ function showSubjects(req, res, subjects) {
     req.viewData.subjects = subjects;
     req.viewData.terms = [{'id': 1, 'name': 'zimowy'}, {'id': 2, 'name': 'letni'}];
     res.render('subject-list', req.viewData);
-};
+}
 
 function curryShowSubjects(req, res) {
     return (subjects) => showSubjects(req, res, subjects);
-};
+}
 
 function sendSubjects(req, res, subjects) {
     res.send(subjects);
-};
+}
 
 function currySendSubjects(req, res) {
     return (subjects) => sendSubjects(req, res, subjects);
-};
+}
 
 router.get('/', function(req, res, next) {
     getSubjects(req.query)
@@ -93,9 +93,9 @@ router.post('/add-subject', function(req, res, next) {
     };
     logger.info(subjectData);
     subjects.createNewSubject(subjectData).then((subject) => {
-        res.send({ type: 'info', message: s.sprintf('Dodano przedmiot "%s".', subjectData.name) })
+        res.send({ type: 'info', message: s.sprintf('Dodano przedmiot "%s".', subjectData.name) });
     }).catch(SubjectAlreadyExistsError, function(err) {
-        res.send({ type: 'warning', message: 'Przedmiot o podanej nazwie już istnieje dla podanego semestru.' })
+        res.send({ type: 'warning', message: 'Przedmiot o podanej nazwie już istnieje dla podanego semestru.' });
     }).catch(SequelizeValidationError, function(err) {
         logger.debug('Dodawanie przedmiotu - błąd walidacji modelu: %s', err.message);
         const errors = err.errors;
@@ -222,13 +222,14 @@ function createUserGradeObjects(user) {
             firstName: user.firstName,
             lastName: userJson.lastName,
             attempt: grade.attempt,
-            grade: grade.grade
+            grade: parseFloat(grade.grade)  // Sequelize zwraca decimale jako stringi #nodepostgrestakrobi
         };
     };
     
     if (grades && grades.length > 0) {
         if (grades[0].attempt === 2) {
             objects.push(createUserGradeObject(userJson, {attempt: 1, grade: 2.0}));
+            objects.push(createUserGradeObject(userJson, grades[0]));
         } else {
             objects.push(createUserGradeObject(userJson, grades[0]));
             if (grades.length === 2) {
@@ -274,7 +275,7 @@ function generateStats(userGrades, highestAttempts) {
                 .reduce((sum, x) => sum + x) / userGrades.length;
         }
         return avg;
-    }
+    };
     const checkIfPassed = (userGrade) => userGrade.grade > 2.0;
     
     const stats = {};
@@ -294,7 +295,8 @@ router.get('/report/:subjectId', function(req, res, next) {
             if (!subject) {
                 res.send({ type: 'warning', message: 'Wskazany przedmiot nie istnieje' });
             } else {
-                const gradesByUser = subject.users.map(createUserGradeObjects);
+                // Filter poniżej usuwa tablice uzytkowników, którzy nie mieli ocen z przedmiotu
+                const gradesByUser = _.filter(subject.users.map(createUserGradeObjects), 'length');
                 const highestAttemptsArray = _.map(gradesByUser, getMaxAttempt);
                 const userGrades = _.flatten(gradesByUser);
                 const viewData = req.viewData;

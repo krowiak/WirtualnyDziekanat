@@ -16,7 +16,9 @@ function getSubjects(query, userId) {
         order: ordering,
         include: [{
             model: grades.Grade,
-            attributes: grades.publicFields
+            attributes: grades.publicFields,
+            where: { userId: userId },
+            required: false
         },
         {
             model: users.User,

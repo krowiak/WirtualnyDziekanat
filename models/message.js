@@ -48,6 +48,7 @@ exports.getMessageByUser = function(idUser){
     return definition.findAll({
       include: [{
         model: user.User,
+        as: 'messageTo',
         where: { id: idUser },
         attributes: user.publicFields
       }],
