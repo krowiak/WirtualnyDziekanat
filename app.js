@@ -71,7 +71,6 @@ app.use('/password', password);
 app.use('/logout', logout);
 app.use(auth.forcePasswordChange());
 app.use('/', index);
-app.use('/users', users);
 app.use('/login', login);
 app.use('/registration', registration);
 
@@ -81,6 +80,9 @@ app.use('/registration', registration);
 // /student/podania itd. będą wymagały logowania
 app.use('/tajemnice', auth.authenticate());
 app.use('/tajemnice', tajemnice);
+
+app.use('/users', auth.authenticate());
+app.use('/users', users);
 
 // Strony tylko dla administratorów
 app.use('/admin', auth.authenticate());
@@ -101,6 +103,7 @@ app.use('/student/subjects', subjectListsStudent);
 app.use('/student/applications', applicationsStudents);
 app.use('/student/scholarships', scholarships);
 
+app.use('/message', auth.authenticate());
 app.use('/message', messageController);
 
 
