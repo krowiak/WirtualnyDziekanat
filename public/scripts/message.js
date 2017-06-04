@@ -12,6 +12,9 @@ $(document).ready(function () {
   	$('#sendButton').click(function () {
 	  	send();
   	});
+  	$('#respondButton').click(function () {
+	  	respond();
+  	});
 });
 
 function getUsers(text){
@@ -49,7 +52,7 @@ function createMsgTable(messages){
 	$("#allMessages tbody").empty();
 	for(i=0;i<messages.length;i++){
 				date = messages[i].created_at;
-			    $('#allMessages tbody').append( '<tr><td>'+ messages[i].from +'</td>' +'<td>' 
+			    $('#allMessages tbody').append( '<tr><td>'+ messages[i].messageFrom.firstName +" "+ messages[i].messageTo.lastName+'</td>' +'<td>' 
 											    	+date+'</td>'+'<td>' 
 											    	+'<button onClick="openMsgModal('+i+')" type="button", data-toggle="modal", data-target="#myModal" class="btn btn-info">Check it out</button></td></tr>' );
 	}
@@ -74,14 +77,14 @@ function openModal(index){
 }
 function openMsgModal(index){
 	if(Messages[index]){
-		$("#myModal .modal-title").text("Message From: "+ Messages[index].from);
+		$("#myModal .modal-title").text("Message From: "+ Messages[index].messageFrom.firstName +" "+ Messages[index].messageTo.lastName);
 		$('#myModal').attr('userId', Messages[index].id);
 		$('#myModal .modal-body p').text(Messages[index].content);
 
 
 		//ustawienie przezornie juz drugiego modalka
-		$("#notmyModal .modal-title").text("Send to: "+ Users[index].firstName + " " + Users[index].lastName);
-		$('#notmyModal').attr('userId', Users[index].id);
+		$("#notmyModal .modal-title").text("Send to: "+ Messages[index].messageFrom.firstName + " " + Messages[index].messageTo.lastName);
+		$('#notmyModal').attr('userId', Messages[index].messageFrom.id);
 	}
 }
 
@@ -96,6 +99,7 @@ function send(){
 			    data: { fromId: 1, toId: toId,content: content},
 			    success: function(data) {   
 			    	 $('#notmyModal').modal('toggle');
+			    	 getMessages();
 			    },
 			    error: function() {
 			        //Do alert is error
@@ -105,4 +109,9 @@ function send(){
 	else{
 		alert("I won't send that!");
 	}
+}
+
+function respond(){
+	$('#myModal').modal('toggle');
+	$('#notmyModal').modal('show');
 }

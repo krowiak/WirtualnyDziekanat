@@ -51,6 +51,10 @@ exports.getMessageByUser = function(idUser){
         as: 'messageTo',
         where: { id: idUser },
         attributes: user.publicFields
+        }, {
+        model: user.User,
+        as: 'messageFrom',
+        attributes: user.publicFields,
       }],
       attributes: exports.publicFields
     }
