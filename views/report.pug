@@ -1,0 +1,38 @@
+extends layout
+
+
+block content
+	h1 #{subject.name}
+	h2 Raport ocen
+
+	if userGrades
+		table#userTable.table
+			thead.thead-inverse
+				tr
+					th Imię
+					th Nazwisko
+					th Termin
+					th Ocena
+			tbody
+				each userGrade in userGrades
+					tr
+						td #{userGrade.firstName}
+						td #{userGrade.lastName}
+						td #{userGrade.attempt}
+						td #{userGrade.grade}
+		
+		h2 Statystyki
+		ul
+			li Średnia ocen w pierwszym terminie: #{stats.avgFirst}
+			li Średnia ocen w drugim terminie: #{stats.avgSecond}
+			li Średnia ocen (ogólnie): #{stats.avgTotal}
+			li Liczba studentów, która zaliczyła w pierwszym terminie: #{stats.numPassedFirst}
+			li Liczba studentów, która zaliczyła w dowolnym terminie: #{stats.numPassedAny}
+	else
+		p Na razie nie wprowadzona żadnych ocen z tego przedmiotu.
+
+
+    
+	  
+
+
