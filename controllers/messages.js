@@ -16,7 +16,7 @@ router.get('/:userId', function(req, res, next) {
 //sendMessage
 router.post('/send', function(req,res) {
 
-    message.send(req.body.fromId,req.body.toId,req.body.content).then( (response) => {
+    message.send(req.user.id,req.body.toId,req.body.content).then( (response) => {
         res.end( JSON.stringify(response));
     });
 

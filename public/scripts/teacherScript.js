@@ -59,6 +59,7 @@ function showMessage(msg){
 //funkcja na pałe na razie do poprawy!!
 function saveGrades(id,att){
 	var grade;
+	var subjectId = $('#asignedStudentsTable tbody').attr('subjectId');
 	if(att==1)
 		grade=parseFloat($("#fstAttempt").val()).toFixed(2)
 	else if(att==2)
@@ -68,7 +69,7 @@ function saveGrades(id,att){
 		    url: "subjects/grade",
 		    type:"POST",
 		    dataType: "json",
-		    data: { userId: id, subjectId: 1,grade: grade, attempt: att},
+		    data: { userId: id, subjectId: subjectId,grade: grade, attempt: att},
 		    success: function(data) {
 		    	if(data.message===undefined)
 		    		showMessage("Zapisano ocenę");
