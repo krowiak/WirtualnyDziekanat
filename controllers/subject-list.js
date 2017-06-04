@@ -7,6 +7,8 @@ const subjects = require('../models/subject');
 // Bez tego wykrzaczy się na joinach.
 const userSubjects = require('../models/user-subjects');
 const users = require('../models/user');
+const userRoles = require('../models/user-roles');
+const grades = require('../models/grade');
 const SubjectAlreadyExistsError = require('../models/errors/subject-already-exists');
 const SequelizeValidationError = require('sequelize').ValidationError;
 const SubjectDoesNotExistError = require("../models/errors/subject-does-not-exist");
@@ -17,10 +19,6 @@ const s = require('sprintf-js');
 const connection = require('../database/connection').connection;
 const _ = require('lodash');
 const Promise = require("bluebird");
-
-// Prawdopodobnie przydałaby się jakaś bardziej złożona logika tutaj, 
-// np. student należy do przedmiotu+nauczyciela, rozróżnienie wykładowca/ćwiczeniowiec?
-// Ale jesteśmy trosik do tyłu, a w wymaganiach nic nie ma, więęęc.
 
 function getSubjects(query) {
     const ordering = query.orderBy || [['year', 'ASC'], ['term', 'ASC']];
@@ -156,8 +154,6 @@ router.post('/change-subjects', function(req, res, next) {
     }
 });
 
-
-// TODO: przypisywanie uzytkowników powinno wymagać, zeby przypisywany był student lub nauczyciel
 router.post('/assign-users', function(req, res, next) {
     const subjectId = req.body.subjectId;
     const userIds = req.body.users;
@@ -213,6 +209,104 @@ router.get('/users/:subjectId', function(req, res, next) {
         .then((subjects) => subjects[0].getUsers())
         .then((userList) => userList.map(user => users.extractPublicFields(user)))
         .then((userList) => res.send(userList));
+});
+
+function createUserGradeObjects(user) {
+    const userJson = user.toJSON();
+    const grades = userJson.grades;
+    const objects = [];
+    const createUserGradeObject = function (userJsonuser, grade) {
+        return {
+            gradeId: grade.id,
+            userId: userJson.id,
+            firstName: user.firstName,
+            lastName: userJson.lastName,
+            attempt: grade.attempt,
+            grade: grade.grade
+        };
+    };
+    
+    if (grades && grades.length > 0) {
+        if (grades[0].attempt === 2) {
+            objects.push(createUserGradeObject(userJson, {attempt: 1, grade: 2.0}));
+        } else {
+            objects.push(createUserGradeObject(userJson, grades[0]));
+            if (grades.length === 2) {
+                objects.push(createUserGradeObject(userJson, grades[1]));
+            }
+        }
+    }
+    
+    return objects;
+}
+
+function getMaxAttempt(attempts) {
+    return attempts.length === 1 ? attempts[0] : attempts[1];
+}
+
+
+function getSubjectWithGrades(subjectId) {
+    return subjects.Subject.findOne({
+        where: { id: subjectId },
+        attributes: subjects.publicFields,
+        include: [{
+            model: users.User,
+            where: { role: userRoles.Student },
+            attributes: ['id', 'firstName', 'lastName'],
+            order: ['lastName', 'ASC'],
+            include: [{ 
+                model: grades.Grade,
+                attributes: grades.publicFields,
+                where: { subjectId: subjectId },
+                order: ['attempt', 'ASC'],
+                required: false
+            }],
+        }],
+    });
+}
+
+function generateStats(userGrades, highestAttempts) {
+    const average = function (userGrades) {
+        let avg = 0;
+        if (userGrades.length > 0) {
+            avg = _.chain(userGrades)
+                .map((userGrade) => userGrade.grade)
+                .reduce((sum, x) => sum + x) / userGrades.length;
+        }
+        return avg;
+    }
+    const checkIfPassed = (userGrade) => userGrade.grade > 2.0;
+    
+    const stats = {};
+    const firstAttempts = _.filter(userGrades, (userGrade) => userGrade.attempt === 1);
+    stats.avgFirst = average(firstAttempts);
+    stats.avgSecond = average(_.filter(userGrades, 
+        (userGrade) => userGrade.attempt === 2));
+    stats.avgTotal = average(highestAttempts);
+    stats.numPassedFirst = _.filter(firstAttempts, checkIfPassed).length;
+    stats.numPassedAny = _.filter(highestAttempts, checkIfPassed).length;
+    return stats;
+}
+
+router.get('/report/:subjectId', function(req, res, next) {
+    getSubjectWithGrades(req.params.subjectId)
+        .then((subject) => {
+            if (!subject) {
+                res.send({ type: 'warning', message: 'Wskazany przedmiot nie istnieje' });
+            } else {
+                const gradesByUser = subject.users.map(createUserGradeObjects);
+                const highestAttemptsArray = _.map(gradesByUser, getMaxAttempt);
+                const userGrades = _.flatten(gradesByUser);
+                const viewData = req.viewData;
+                viewData.subject = subject;
+                viewData.userGrades = userGrades;
+                viewData.stats = generateStats(userGrades, highestAttemptsArray);
+                res.render('report', viewData);
+                //res.send(userGrades);
+            }
+        });
+        
+        
 });
 
 module.exports = router;
