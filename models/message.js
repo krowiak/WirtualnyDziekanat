@@ -32,8 +32,8 @@ exports.Message = definition;
 exports.publicFields = [ 'id', 'content', 'read', 'created_at' ];
 definition.belongsTo(user.User, { foreignKey: 'from', as: 'messageFrom' });
 definition.belongsTo(user.User, { foreignKey: 'to', as: 'messageTo' });
-user.User.hasOne(definition, { foreignKey: 'from', as: 'messageFrom' });
-user.User.hasOne(definition, { foreignKey: 'to', as: 'messageTo' });
+user.User.hasMany(definition, { foreignKey: 'from', as: 'messageFrom' });
+user.User.hasMany(definition, { foreignKey: 'to', as: 'messageTo' });
 
 exports.send = function (idFrom, idTo, content) {
   return definition.create({
