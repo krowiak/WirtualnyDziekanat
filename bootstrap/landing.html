@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <title>Dziekanator3000 - navbary</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="navbar-style.css">
+  <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
+  <script src="login-register.js" type="text/javascript"></script>
+  <link href="login-register.css" rel="stylesheet" /> 
+</head>
+<body> 
+
+<!-- BOOTSTRAP MAGIC AHEAD -->
+
+<!-- NAVBAR LANDING PAGE -->
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand"><img class="img-responsive" style="display:inline-block; height:30px; margin-top:-5px" src="logo-small.png" /> Dziekanator3000</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li class="active"><a href="#">Strona główna</a></li>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a data-toggle="modal" href="javascript:void(0)" onclick="openRegisterModal();"><span class="glyphicon glyphicon-pencil"></span> Rejestracja</a></li>
+      <li><a data-toggle="modal" href="javascript:void(0)" onclick="openLoginModal();"><span class="glyphicon glyphicon-user"></span> Logowanie</a></li>
+    </ul>
+  </div>
+</nav> 
+
+<!-- LOGIN/REGISTRATION MODALS-->
+     <div class="modal fade login" id="loginModal">
+          <div class="modal-dialog login animated">
+              <div class="modal-content">
+                    <div class="modal-body">  
+                        <div class="box">
+                             <div class="content">
+                                <div class="division">
+                                    <div class="line l"></div>
+                                      <span class="modal-title">Zaloguj</span>
+                                    <div class="line r"></div>
+                                </div>
+                                <div class="error"></div>
+                                <div class="form loginBox">
+                                    <form method="post" action="/login" accept-charset="UTF-8">
+                                    <input id="email" class="form-control" type="text" placeholder="Nazwa użytkownika" name="email">
+                                    <input id="password" class="form-control" type="password" placeholder="Hasło" name="password">
+                                    <input class="btn btn-default btn-login" type="button" value="Zaloguj" onclick="loginAjax()">
+                                    </form>
+                                </div>
+                             </div>
+                        </div>
+                        <div class="box">
+                            <div class="content registerBox" style="display:none;">
+                             <div class="form">
+                                <form method="post" html="{:multipart=>true}" data-remote="true" action="/register" accept-charset="UTF-8">
+                                <input id="name" class="form-control" type="text" placeholder="Imię" name="name">
+                                <input id="surname" class="form-control" type="text" placeholder="Nazwisko" name="surname">
+                                <input id="email" class="form-control" type="text" placeholder="Email" name="email">
+                                <input id="password" class="form-control" type="password" placeholder="Hasło" name="password">
+                                <input id="password_confirmation" class="form-control" type="password" placeholder="Powtórz hasło" name="password_confirmation">
+                                <input class="btn btn-default btn-register" type="submit" value="Stwórz konto" name="commit">
+                                </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="box">
+                            <div class="content forgottenBox" style="display:none;">
+                             <div class="form">
+                                <form method="post" action="/forgotten" accept-charset="UTF-8">
+                                <input id="email" class="form-control" type="text" placeholder="Email" name="email">
+                                <input class="btn btn-default btn-forgotten" type="submit" value="Przypomnij hasło" name="commit">
+                                </form>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <div class="forgot login-footer">
+                            <span>Potrzebujesz 
+                                 <a href="javascript: showRegisterForm();">stworzyć konto</a>
+                            ?</span>
+                            <span>A może 
+                                 <a href="javascript: showForgottenForm();">zapomniałeś hasła</a>
+                            ?</span>
+                        </div>
+                        <div class="forgot register-footer" style="display:none">
+                             <span>Masz już konto</span>
+                             <a href="javascript: showLoginForm();">Zaloguj się</a>
+                        </div>
+                        <div class="forgot forgotten-footer" style="display:none">
+                             <span><a href="javascript: showLoginForm();">Jednak nie</a>
+                             ?</span>
+                        </div>
+                    </div>        
+              </div>
+          </div>
+      </div>
+    </div>
+
+<!-- "NEWS" PANELS-->
+<div class="news">
+<div class="container">
+  <div class="row">
+    <h2 class="text-center">Witaj w serwisie Dziekanator3000</h2>
+            <div class="row">
+                <div class="col-md-4 text-center">
+                    <div class="box news">
+                        <div class="box-content">
+                            <h1 class="tag-title">ECTS</h1>
+                            <hr />
+                            <p class="text-justify">Każdy członek społeczności akademickiej Uniwersytetu Śląskiego posiada swoje konto użytkownika w serwisie USOSweb, dające studentom możliwość wglądu w oceny oraz uzyskane punkty <abbr title="European Credit Transfer System">ECTS</abbr>, sprawdzenia przyznanych stypendiów oraz miejsca w akademiku, wprowadzenia zdjęcia do Elektronicznej Legitymacji Studenckiej a także uzyskania informacji o numerze indywidualnego konta bankowego, na które student będzie zobowiązany wnosić ewentualne opłaty związane ze studiami. Większość Wydziałów Uniwersytetu Śląskiego uruchamia elektroniczne rejestracje do grup zajęciowych, w których studenci uczestniczą za pomocą serwisu USOSweb. Pracownikom prowadzącym zajęcia dydaktyczne serwis umożliwia wprowadzenie ocen oraz sylabusów do zajęć.</p>
+                            <br />
+                            <a href="#" class="btn btn-block btn-primary">Czytaj więcej</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="box">
+                        <div class="box-content">
+                            <h1 class="tag-title">Katalog</h1>
+                            <hr />
+                            <p class="text-justify">Niezależnie od posiadanej roli, część informacji prezentowanych w USOSweb dostępna jest publicznie - jest to tzw. KATALOG, w którym znajdują się m. in. informacje o prowadzonych kierunkach studiów oraz wykazy pracowników, przedmiotów, jednostek organizacyjnych. Zdecydowana jednak większość funkcjonalności dostępna jest jedynie dla uwierzytelnionych użytkowników. Logowanie do serwisu USOSweb, jak również do pozostałych serwisów współdziałających z systemem USOS odbywa się za pośrednictwem <abbr title="Centralny System Uwierzytelniania">CAS</abbr> Uniwersytetu Śląskiego. </p>
+                            <br />
+                            <a href="#" class="btn btn-block btn-primary">Czytaj więcej</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="box">
+                        <div class="box-content">
+                            <h1 class="tag-title">Identyfikator</h1>
+                            <hr />
+                            <p class="text-justify">Identyfikatorem w <abbr title="Centralny System Uwierzytelniania">CAS</abbr> jest numer PESEL, numer indeksu lub adres e-mail. Studenci rozpoczynający studia w Uniwersytecie Śląskim logują się hasłem wykorzystywanym w systemie Internetowej Rejestracji Kandydatów. W przypadku utraty hasła do konta w <abbr title="Centralny System Uwierzytelniania">CAS</abbr> można samodzielnie zresetować hasło podając adres poczty elektronicznej wykorzystywany w systemach informatycznych Uniwersytetu Śląskiego.</p>
+                            <br />
+                            <a href="#" class="btn btn-block btn-primary">Czytaj więcej</a>
+                        </div>
+                    </div>
+                </div>
+            </div>           
+        </div>
+  </div>
+</div>
+
+<!-- ENDOF BOOTSTRAP MAGIC -->
+
+</body>
+</html>
