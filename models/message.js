@@ -43,3 +43,13 @@ exports.send = function (idFrom, idTo, content) {
     read: false
   });
 };
+
+exports.getMessageByUser = function(idUser){
+    return definition.findAll({
+        where :
+            {to : idUser}
+    }
+    );
+
+};
+

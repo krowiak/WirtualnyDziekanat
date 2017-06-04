@@ -27,6 +27,8 @@ const applicationsAdmin = require('./controllers/applications-admin');
 const applicationsStudents = require('./controllers/applications-student');
 const scholarships = require('./controllers/scholarships');
 
+const messageController = require('./controllers/messages');
+
 
 const app = express();
 
@@ -98,6 +100,9 @@ app.use('/student', auth.authorize('3'));
 app.use('/student/subjects', subjectListsStudent);
 app.use('/student/applications', applicationsStudents);
 app.use('/student/scholarships', scholarships);
+
+app.use('/message', messageController);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
