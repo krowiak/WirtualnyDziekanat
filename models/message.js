@@ -46,8 +46,12 @@ exports.send = function (idFrom, idTo, content) {
 
 exports.getMessageByUser = function(idUser){
     return definition.findAll({
-        where :
-            {to : idUser}
+      include: [{
+        model: user.User,
+        where: { id: idUser },
+        attributes: user.publicFields
+      }],
+      attributes: exports.publicFields
     }
     );
 
