@@ -23,4 +23,10 @@ router.post('/send', function(req,res) {
     }
 );
 
+router.get('/', function(req, res, next) {
+
+    res.render('messages',req.viewData);
+
+});
+
 module.exports = router;
