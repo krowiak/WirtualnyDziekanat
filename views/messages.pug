@@ -1,0 +1,60 @@
+extends layout
+
+block content
+	#myModal.modal.fade(role='dialog')
+			.modal-dialog
+			// Modal content
+			.modal-content
+				.modal-header
+					button.close(type='button', data-dismiss='modal') ×
+					h4.modal-title Modal Header
+				.modal-body
+					p Some text in the modal.
+				.modal-footer
+					button.btn.btn-info(type='button', data-dismiss='modal') Respond
+	#notmyModal.modal.fade(role='dialog')
+			.modal-dialog
+			// Modal content
+			.modal-content
+				.modal-header
+					button.close(type='button', data-dismiss='modal') ×
+					h4.modal-title Modal Header
+				.modal-body
+					.form-group
+						label(for='comment') Content:
+						textarea#comment.form-control(rows='5')
+				.modal-footer
+					button.btn.btn-success(type='button', data-dismiss='modal') Send
+	button.btn.btn-info.btn-lg(type='button', data-toggle='modal', data-target='#notmyModal' onClick="pupka()") Open Modal
+	
+	.row    
+		.col-lg-4 
+			.row
+				.col-md-12
+					.input-group
+						input#searchText.form-control(type='text', placeholder='Search for...')
+						span.input-group-btn
+							button#searchbtn.btn.btn-default(type='button') Search!
+			table#subjectTable.table
+				thead.thead-inverse
+					tr
+						th First Name
+						th Last Name
+						th E-mail
+						th Send
+				tbody
+		.col-lg-8(style="background-color: #ebebeb;")
+			table#asignedStudentsTable.table
+				thead.thead-inverse
+				tr 
+					th From
+					th Check
+				tbody
+				tr
+					td  Me
+					td  
+						button.btn.btn-info(type='button') Check it out!
+				tr
+					td  Me
+					td  
+						button.btn.btn-info(type='button') Check it out!		
