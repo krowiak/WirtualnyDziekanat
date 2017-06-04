@@ -1,0 +1,29 @@
+extends layout
+
+block append scripts
+  script(src='/scripts/createApplicationScript.js')
+
+block content
+  
+  .col-md-8.brd.col-md-offset-2
+    .panel.panel-primary
+      .panel-heading Składanie podania
+      .panel-body
+        form(name='new' method='POST' action='/student/applications/new')
+          label(for='reason') Rodzaj wniosku:
+          select#reason.select.form-control(name='reason')
+              option(value='stypendium') Stypendium
+              option(value='przedluzenie') Przedłużenie sesji
+              option(value='warunek') Warunek
+              option(value='komis') Egzamin komisyjny
+          div#subjectGroup.form-group.hidden
+            label(for='subject') Przedmiot:
+            input#subject.form-control(type='text' name='subject')
+          div#untilGroup.form-group.hidden
+            label(for='until') Do dnia:
+            input#until.form-control(type='date' name='until')
+          div.form-group
+            label(for='body' style='display:block') Uzasadnienie:
+            textarea#body(rows='10' cols='60' name='body' style='display:block')
+          input#userId.hidden.form-control(type='numeric' name='userId' value=user.id)
+          button.btn.btn-primary(type='submit' enctype='application/x-www-form-urlencoded') Złóż podanie

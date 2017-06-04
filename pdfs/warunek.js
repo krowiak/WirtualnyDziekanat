@@ -3,7 +3,7 @@ const moment = require('moment');
 const path = require('path');
 
 exports.create = function (applicationData, pipeTo) {
-    const fontTitle = path.resolve(__dirname, './fonts/Merriweather/Merriweather-Bold.ttf');
+    const fontBold = path.resolve(__dirname, './fonts/Merriweather/Merriweather-Bold.ttf');
     const fontRegular = path.resolve(__dirname, './fonts/Merriweather/Merriweather-Regular.ttf');
     const fontSignature = path.resolve(__dirname, './fonts/Merriweather/Merriweather-Italic.ttf');
     const doc = new PDFDocument();
@@ -15,9 +15,13 @@ exports.create = function (applicationData, pipeTo) {
        .text(createdAt, {align: 'right'});
     doc.moveDown(2);
     
-    doc.font(fontTitle, 25)
-       .text('Podanie o przedłużenie sesji egzaminacyjnej do dnia ' + moment(body.until).format('DD.MM.YYYY'), 
+    doc.font(fontBold, 25)
+       .text('Podanie o warunkowe zaliczenie etapu studiów', 
        {align: 'center'});
+    doc.moveDown(1);
+    
+    doc.font(fontRegular, 13)
+       .text('Niezaliczony przedmiot: ' + body.subject);
     doc.moveDown(1);
        
     doc.font(fontRegular, 13)

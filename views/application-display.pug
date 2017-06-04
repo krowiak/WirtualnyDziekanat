@@ -1,0 +1,26 @@
+extends layout
+
+block content
+
+  if reason === 'przedluzenie'
+    h1 Podanie o przedluzenie sesji egzaminacyjnej
+  else if reason === 'warunek'
+    h1 Podanie o warunkowe zaliczenie etapu studiów
+  else if reason === 'stypendium'
+    h1 Podanie o przyznanie stypendium
+  else if reason === 'komis'
+    h1 Podanie o egzamin komisyjny
+    
+  h3 Student
+  span #{who.firstName} #{who.lastName}
+  if reason === 'komis' || reason === 'warunek'
+    h3 Przedmiot
+    p #{body.subject}
+  if reason === 'przedluzenie'
+    h3 Do dnia
+    p #{body.until}
+  h3 Uzasadnienie
+  p #{body.body}
+  
+  if user.role === '1'
+    div Coś ze zmienianiem roli tutaj

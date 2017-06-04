@@ -16,7 +16,7 @@ exports.create = function (applicationData, pipeTo) {
     doc.moveDown(2);
     
     doc.font(fontTitle, 25)
-       .text('Podanie o przedłużenie sesji egzaminacyjnej do dnia ' + moment(body.until).format('DD.MM.YYYY'), 
+       .text('Podanie o egzamin komisyjny z przedmiotu ' + body.subject, 
        {align: 'center'});
     doc.moveDown(1);
        

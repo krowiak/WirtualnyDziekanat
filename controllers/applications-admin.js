@@ -9,6 +9,7 @@ const ApplicationDoesNotExitError = require('../models/errors/application-does-n
 const IllegalApplicationStatusChangeError = require('../models/errors/illegal-application-status-change');
 const SequelizeValidationError = require('sequelize').ValidationError;
 const logger = require('winston');
+const moment = require('moment');
 
 function getApplications(query) {
     const ordering = query.orderBy || [['created_at', 'DESC']];
@@ -28,7 +29,8 @@ function getApplications(query) {
 function getOneApplication(applicationId) {
     return applications.Application.findOne({
         where: { id: applicationId },
-        attributes: applications.publicFields
+        attributes: applications.publicFields,
+        include: [{model: users.User}]
     });
 }
 
@@ -43,7 +45,14 @@ router.get('/:applicationId', function(req, res, next) {
     getOneApplication(applicationId)
         .then((application) => {
             if (application) {
-                res.send(application);
+                logger.info(application.toJSON());
+                req.viewData.reason = application.reason;
+                req.viewData.who = application.user;
+                req.viewData.body = JSON.parse(application.body);
+                if (application.body.until) {
+                    req.viewData.body.until = moment(application.body.until).format('DD.MM.YYYY');
+                }
+                res.render('application-display', req.viewData);
             } else {
                 res.send({ 
                     type: 'warning', 
