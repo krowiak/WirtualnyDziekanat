@@ -25,6 +25,7 @@ const subjectListsTeacher = require('./controllers/subject-list-teacher');
 const subjectListsStudent = require('./controllers/subject-list-student');
 const applicationsAdmin = require('./controllers/applications-admin');
 const applicationsStudents = require('./controllers/applications-student');
+const scholarships = require('./controllers/scholarships');
 
 
 const app = express();
@@ -96,6 +97,7 @@ app.use('/student', auth.authenticate());
 app.use('/student', auth.authorize('3'));
 app.use('/student/subjects', subjectListsStudent);
 app.use('/student/applications', applicationsStudents);
+app.use('/student/scholarships', scholarships);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

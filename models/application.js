@@ -5,6 +5,7 @@ const Sequelize = require("sequelize");
 const logger = require('winston');
 const applicationReasons = require('./application-reasons');
 const applicationStatuses = require('./application-statuses');
+const scholarshipReasons = require('./scholarship-reasons');
 const user = require('./user');
 const ApplicationDoesNotExitError = require('./errors/application-does-not-exist');
 const IllegalApplicationStatusChangeError = require('./errors/illegal-application-status-change');
@@ -74,11 +75,14 @@ function extractBody(applicationData) {
   const body = {};
   body.body = applicationData.body;
   if (applicationData.reason === applicationReasons.Przedluzenie) {
-    body.until =applicationData.until;
+    body.until = applicationData.until;
   }
   if (applicationData.reason === applicationReasons.Warunek ||
     applicationData.reason === applicationReasons.EgzaminKomisyjny) {
-    body.subject =applicationData.subject;
+    body.subject = applicationData.subject;
+  }
+  if (applicationData.reason === applicationReasons.Stypendium) {
+    body.why = applicationData.why;
   }
   return body;
 }
@@ -113,6 +117,12 @@ function validateBody(applicationBody, reason) {
       }
     } catch (err) {
         throw new ApplicationContentInvalidError('Podana data jest niepoprawna.');
+    }
+  }
+  
+  if (reason === applicationReasons.Stypendium) {
+    if (scholarshipReasons.indexOf(applicationBody.why) === 0) {
+        throw new ApplicationContentInvalidError('Rodzaj stypendium jest niepoprawny.');
     }
   }
 }

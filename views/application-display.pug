@@ -19,6 +19,9 @@ block content
   if reason === 'przedluzenie'
     h3 Do dnia
     p #{body.until}
+  if reason === 'stypendium'
+    h3 Rodzaj
+    p #{body.why}
   h3 Uzasadnienie
   p #{body.body}
   

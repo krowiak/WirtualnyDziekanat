@@ -7,6 +7,7 @@ const users = require('../models/user');
 const logger = require('winston');
 const ApplicationContentInvalidError = require('../models/errors/application-content-invalid');
 const moment = require('moment');
+const scholarshipReasons = require('../models/scholarship-reasons');
 
 function getApplications(query, userId) {
     const ordering = query.orderBy || [['created_at', 'DESC']];
@@ -85,9 +86,13 @@ router.get('/:applicationId', function(req, res, next) {
             if (application) {
                 req.viewData.reason = application.reason;
                 req.viewData.who = application.user;
-                req.viewData.body = JSON.parse(application.body);
-                if (application.body.until) {
-                    req.viewData.body.until = moment(application.body.until).format('DD.MM.YYYY');
+                const body = JSON.parse(application.body);
+                req.viewData.body = body;
+                if (body.until) {
+                    req.viewData.body.until = moment(body.until).format('DD.MM.YYYY');
+                }
+                if (body.why) {
+                    req.viewData.body.why = scholarshipReasons.getReadableReason(body.why);
                 }
                 res.render('application-display', req.viewData);
             }

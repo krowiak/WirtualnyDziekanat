@@ -1,6 +1,22 @@
 const PDFDocument = require('pdfkit');
 const moment = require('moment');
 const path = require('path');
+const scholarshipReasons = require('../models/scholarship-reasons');
+
+function getReadableScholarshipReason(reason) {
+    switch (reason) {
+        case scholarshipReasons.Learning:
+            return 'za osiagnięcia w nauce';
+        case scholarshipReasons.Sports:
+            return 'za osiagnięcia sportowe';
+        case scholarshipReasons.Social:
+            return 'socjalnego';
+        case scholarshipReasons.Other:
+            return '';
+        default:
+            return 'nieokreślonego rodzaju';
+    }
+}
 
 exports.create = function (applicationData, pipeTo) {
     const fontTitle = path.resolve(__dirname, './fonts/Merriweather/Merriweather-Bold.ttf');
@@ -16,7 +32,7 @@ exports.create = function (applicationData, pipeTo) {
     doc.moveDown(2);
     
     doc.font(fontTitle, 25)
-       .text('Podanie o przyznanie stypendium', 
+       .text('Podanie o przyznanie stypendium ' + getReadableScholarshipReason(body.why), 
        {align: 'center'});
     doc.moveDown(1);
        

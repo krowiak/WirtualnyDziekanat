@@ -1,0 +1,16 @@
+extends layout
+
+block content
+
+  table#scholarshipTable.table
+    thead.thead-inverse
+      tr
+        th Powód
+        th Przyznano
+    tbody
+      each scholarship in scholarships
+        tr
+          td #{scholarship.reason}
+          td #{scholarship.when}
+          td 
+            a.btn.btn-success(href="applications/"+scholarship.applicationId) Zobacz podanie
