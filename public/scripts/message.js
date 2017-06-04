@@ -1,7 +1,9 @@
 text='';
 Users={};
+Messages={};
 $(document).ready(function () {
-	getUsers('');	
+	getUsers('');
+	getMessages();	
   	$('#searchbtn').click(function () {
 	  	text = $('#searchText').val(); 
 	  	getUsers(text);
@@ -10,7 +12,6 @@ $(document).ready(function () {
   	$('#sendButton').click(function () {
 	  	send();
   	});
-  
 });
 
 function getUsers(text){
@@ -29,11 +30,36 @@ function getUsers(text){
 	});
 }
 
+function getMessages(text){
+	jQuery.ajax({
+	    url: "message/1",
+	    type:"GET",
+	    dataType: "json",
+	    success: function(data) {
+	    	Messages=data;
+	        createMsgTable(data);	        
+	    },
+	    error: function() {
+	        //Do alert is error
+	    }
+	});
+}
+
+function createMsgTable(messages){
+	$("#allMessages tbody").empty();
+	for(i=0;i<messages.length;i++){
+				date = messages[i].created_at;
+			    $('#allMessages tbody').append( '<tr><td>'+ messages[i].from +'</td>' +'<td>' 
+											    	+date+'</td>'+'<td>' 
+											    	+'<button onClick="openMsgModal('+i+')" type="button", data-toggle="modal", data-target="#myModal" class="btn btn-info">Check it out</button></td></tr>' );
+	}
+}
+
+
 function createTable(users){
 	$("#userTable tbody").empty();
 	for(i=0;i<users.length;i++){
-			    $('#userTable tbody').append( '<tr><td>'+ users[i].id +'</td>' +'<td>' 
-											    	+ users[i].firstName+'</td>'+'<td>' 
+			    $('#userTable tbody').append( '<tr><td>'+ users[i].firstName +'</td>' +'<td>' 
 											    	+ users[i].lastName+'</td>'+'<td>'
 											    	+'<button onClick="openModal('+i+')" type="button", data-toggle="modal", data-target="#notmyModal" class="btn btn-info">Send</button></td></tr>' );
 	}
@@ -44,6 +70,18 @@ function openModal(index){
 		$("#notmyModal .modal-title").text("Send to: "+ Users[index].firstName + " " + Users[index].lastName);
 		$('#notmyModal').attr('userId', Users[index].id);
 
+	}
+}
+function openMsgModal(index){
+	if(Messages[index]){
+		$("#myModal .modal-title").text("Message From: "+ Messages[index].from);
+		$('#myModal').attr('userId', Messages[index].id);
+		$('#myModal .modal-body p').text(Messages[index].content);
+
+
+		//ustawienie przezornie juz drugiego modalka
+		$("#notmyModal .modal-title").text("Send to: "+ Users[index].firstName + " " + Users[index].lastName);
+		$('#notmyModal').attr('userId', Users[index].id);
 	}
 }
 

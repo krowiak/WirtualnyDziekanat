@@ -36,13 +36,13 @@ function showSubject(index){
 											    + Subjects[index].users[i].firstName+'</td>'+'<td>' 
 											    + Subjects[index].users[i].lastName+'</td>'+'<td>'
 											    +'<div class="input-group">'
-											    +'<input id="fstAttempt" type="number" name="quantity" min="2" max="5" step="0.5" class="form-control" placeholder="'+grades[0]+'">'
+											    +'<input id="fstAttempt" data-id="'+Subjects[index].users[i].id+'+1" type="number" name="quantity" min="2" max="5" step="0.5" class="form-control cos" placeholder="'+grades[0]+'">'
 											    +' <span class="input-group-btn">'
 											    + '<button onClick="saveGrades('+Subjects[index].users[i].id+',1)" type="button" class="btn btn-success">Save'
 											    +'</button></span></div></td><td>'
 
 											    +'<div class="input-group">'
-											    +'<input id="scndAttempt"type="number" name="quantity" min="2" max="5" step="0.5" class="form-control" placeholder="'+grades[1]+'">'
+											    +'<input id="scndAttempt" data-id="'+Subjects[index].users[i].id+'+2" type="number" name="quantity" min="2" max="5" step="0.5" class="form-control" placeholder="'+grades[1]+'">'
 											    +' <span class="input-group-btn">'
 											    + '<button onClick="saveGrades('+Subjects[index].users[i].id+',2)" type="button" class="btn btn-success">Save'+
 											    '</button></span></div></td></tr>' );	
@@ -60,17 +60,14 @@ function showMessage(msg){
 function saveGrades(id,att){
 	var grade;
 	var subjectId = $('#asignedStudentsTable tbody').attr('subjectId');
-	if(att==1)
-		grade=parseFloat($("#fstAttempt").val()).toFixed(2)
-	else if(att==2)
-		grade=parseFloat($("#scndAttempt").val()).toFixed(2)
+	grade=parseFloat($("[data-id='"+id+"+"+att+"']").val()).toFixed(2);
 	if(grade>=2 && grade<=5){
 		jQuery.ajax({
 		    url: "subjects/grade",
 		    type:"POST",
 		    dataType: "json",
 		    data: { userId: id, subjectId: subjectId,grade: grade, attempt: att},
-		    success: function(data) {
+		    success: function(data) {		    	
 		    	if(data.message===undefined)
 		    		showMessage("Zapisano ocenę");
 		    	else
