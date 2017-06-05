@@ -13,11 +13,11 @@ block content
         .panel-body
           form(name='admin/subjects/add-subject' method='POST' onSubmit='return sendForm();')
             div.form-group
-              label(for='name') Name:
+              label(for='name') Nazwa:
               input#name.form-control(type='text' name='name')
-              label(for='year') Year:
+              label(for='year') Rok:
               input#year.form-control(type='text' name='year')
-              label(for='term') Term:
+              label(for='term') Semestr:
               select#terms.select.form-control(name='term')
                 each term in terms
                   option(value=term.id) #{term.name}
@@ -27,26 +27,26 @@ block content
   table#subjectTable.table
     thead.thead-inverse
       tr
-        th Name
-        th Year
-        th Term
+        th Nazwa
+        th Rok
+        th Semestr
         if user.role === '1'
-          th Assign People
+          th Przypisz ludzi
           th 
         else if user.role === '3'
-          th Grade (I)
-          th Grade (II)
+          th Ocena (I)
+          th Ocena (II)
     tbody
       each subject in subjects
         tr(id=subject.id)
           td #{subject.name}
           td #{subject.year}
-          td= subject.term == 1 ? 'Winter' : 'Summer'
+          td= subject.term == 1 ? 'Zimowy' : 'Letni'
           if user.role === '1'
             td 
-              a.btn.btn-success(href="subjects/"+subject.id) Asign someone
+              a.btn.btn-success(href="subjects/"+subject.id) Przypisz kogoś
             td
-              button.btn.btn-danger(onClick='deleteSubject(' + subject.id + ');') Delete
+              button.btn.btn-danger(onClick='deleteSubject(' + subject.id + ');') Usuń
           else if user.role === '3'
             td= subject.grades[0] ? subject.grades[0].grade : 'brak'
             td= subject.grades[1] ? subject.grades[1].grade : 'brak'
