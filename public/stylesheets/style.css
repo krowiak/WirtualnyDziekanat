@@ -24,6 +24,11 @@ hidden {
     color: #880002;
 }
 
+.btn-primary:focus, .btn-primary:active{
+    background-color: #880002;
+    color: #ed877d;
+}
+
 .panel-primary .panel-heading{
     background-color: #e80f27;
     border-color: #ed877d;
