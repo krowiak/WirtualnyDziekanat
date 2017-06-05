@@ -54,7 +54,7 @@ function createMsgTable(messages){
 				date = messages[i].created_at;
 			    $('#allMessages tbody').append( '<tr><td>'+ messages[i].messageFrom.firstName +" "+ messages[i].messageTo.lastName+'</td>' +'<td>' 
 											    	+date+'</td>'+'<td>' 
-											    	+'<button onClick="openMsgModal('+i+')" type="button", data-toggle="modal", data-target="#myModal" class="btn btn-info">Check it out</button></td></tr>' );
+											    	+'<button onClick="openMsgModal('+i+')" type="button", data-toggle="modal", data-target="#myModal" class="btn btn-primary">Sprawdź</button></td></tr>' );
 	}
 }
 
@@ -64,26 +64,26 @@ function createTable(users){
 	for(i=0;i<users.length;i++){
 			    $('#userTable tbody').append( '<tr><td>'+ users[i].firstName +'</td>' +'<td>' 
 											    	+ users[i].lastName+'</td>'+'<td>'
-											    	+'<button onClick="openModal('+i+')" type="button", data-toggle="modal", data-target="#notmyModal" class="btn btn-info">Send</button></td></tr>' );
+											    	+'<button onClick="openModal('+i+')" type="button", data-toggle="modal", data-target="#notmyModal" class="btn btn-primary">Wyślij</button></td></tr>' );
 	}
 }
 
 function openModal(index){
 	if(Users[index]){
-		$("#notmyModal .modal-title").text("Send to: "+ Users[index].firstName + " " + Users[index].lastName);
+		$("#notmyModal .modal-title").text("Wyślij do: "+ Users[index].firstName + " " + Users[index].lastName);
 		$('#notmyModal').attr('userId', Users[index].id);
 
 	}
 }
 function openMsgModal(index){
 	if(Messages[index]){
-		$("#myModal .modal-title").text("Message From: "+ Messages[index].messageFrom.firstName +" "+ Messages[index].messageTo.lastName);
+		$("#myModal .modal-title").text("Wiadomość od: "+ Messages[index].messageFrom.firstName +" "+ Messages[index].messageTo.lastName);
 		$('#myModal').attr('userId', Messages[index].id);
 		$('#myModal .modal-body p').text(Messages[index].content);
 
 
 		//ustawienie przezornie juz drugiego modalka
-		$("#notmyModal .modal-title").text("Send to: "+ Messages[index].messageFrom.firstName + " " + Messages[index].messageTo.lastName);
+		$("#notmyModal .modal-title").text("Wyślij do: "+ Messages[index].messageFrom.firstName + " " + Messages[index].messageTo.lastName);
 		$('#notmyModal').attr('userId', Messages[index].messageFrom.id);
 	}
 }
@@ -107,7 +107,7 @@ function send(){
 			});
 	}
 	else{
-		alert("I won't send that!");
+		alert("Nie wyślę tego!");
 	}
 }
 
