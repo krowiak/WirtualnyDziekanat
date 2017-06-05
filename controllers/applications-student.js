@@ -9,6 +9,7 @@ const ApplicationContentInvalidError = require('../models/errors/application-con
 const moment = require('moment');
 const scholarshipReasons = require('../models/scholarship-reasons');
 const helpers = require('./helpers');
+const applicationStatuses = require('../models/application-statuses');
 
 function getApplications(query, userId) {
     const ordering = query.orderBy || [['created_at', 'DESC']];
@@ -90,6 +91,7 @@ router.get('/:applicationId', function(req, res, next) {
             if (application) {
                 req.viewData.reason = application.reason;
                 req.viewData.who = application.user;
+                req.viewData.status = applicationStatuses.getReadableStatus(application.status);
                 const body = JSON.parse(application.body);
                 req.viewData.body = body;
                 if (body.until) {

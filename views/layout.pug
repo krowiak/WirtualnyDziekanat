@@ -3,13 +3,13 @@ extends ../node_modules/pug-bootstrap/_bootstrap
 mixin alerts(flashObj)
   if flashObj && flashObj.anyAlerts
       each error in flashObj.errors
-        +alert-ix-danger(error)
+        +alert-x-danger(error)
       each warning in flashObj.warnings
-        +alert-ix-warning(warning)
+        +alert-x-warning(warning)
       each success in flashObj.successes
-        +alert-ix-success(success)
+        +alert-x-success(success)
       each info in flashObj.infos
-        +alert-ix-info(info)
+        +alert-x-info(info)
 
 block append styles
   link(rel="stylesheet",href="/stylesheets/style.css")
@@ -25,7 +25,8 @@ block  body
         +nav_item("/registration") Zarejestruj się
     header
   .container
-    +alerts(flash)
+    div#alerts.container
+      +alerts(flash)
     block content
   block footer
     footer.footer

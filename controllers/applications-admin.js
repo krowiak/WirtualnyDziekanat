@@ -12,6 +12,7 @@ const logger = require('winston');
 const moment = require('moment');
 const scholarshipReasons = require('../models/scholarship-reasons');
 const helpers = require('./helpers');
+const applicationStatuses = require('../models/application-statuses');
 
 function getApplications(query) {
     const ordering = query.orderBy || [['created_at', 'DESC']];
@@ -50,6 +51,8 @@ router.get('/:applicationId', function(req, res, next) {
                 logger.info(application.toJSON());
                 req.viewData.reason = application.reason;
                 req.viewData.who = application.user;
+                req.viewData.status = application.status;
+                req.viewData.applicationId = application.id;
                 const body = JSON.parse(application.body);
                 req.viewData.body = body;
                 if (body.until) {

@@ -1,5 +1,9 @@
 extends layout
 
+block append scripts
+  script(src='/scripts/rest-messages.js')
+  script(src='/scripts/changeApplicationStatusScript.js')
+
 block content
 
   if reason === 'przedluzenie'
@@ -25,5 +29,14 @@ block content
   h3 Uzasadnienie
   p #{body.body}
   
+  h3 Status
   if user.role === '1'
-    div Coś ze zmienianiem roli tutaj
+    span 
+      select#statusChanger.select(name='statusChanger' data-id=applicationId)
+          option(value='oczekujacy' selected=(status==='oczekujacy')) Oczekujące
+          option(value='rozpatrywany' selected=(status==='rozpatrywany')) Rozpatrywane
+          option(value='zaakceptowany' selected=(status==='zaakceptowany')) Zaakceptowane
+          option(value='odrzucony' selected=(status==='odrzucony')) Odrzucone
+      button#changeStatusBtn(name='changeStatusBtn') Zmień
+  else
+    p #{status}
