@@ -1,6 +1,7 @@
 extends layout
 
 block append scripts
+  script(src='/scripts/rest-messages.js')
   script(src='/scripts/createApplicationScript.js')
 
 block content
@@ -9,7 +10,7 @@ block content
     .panel.panel-primary
       .panel-heading Składanie podania
       .panel-body
-        form(name='new' method='POST' action='/student/applications/new')
+        form(name='new' onSubmit='return sendForm();')
           label(for='reason') Rodzaj wniosku:
           select#reason.select.form-control(name='reason')
               option(value='stypendium') Stypendium
@@ -33,4 +34,4 @@ block content
             label(for='body' style='display:block') Uzasadnienie:
             textarea#body(rows='10' cols='60' name='body' style='display:block')
           input#userId.hidden.form-control(type='numeric' name='userId' value=user.id)
-          button.btn.btn-primary(type='submit' enctype='application/x-www-form-urlencoded') Złóż podanie
+          button.btn.btn-primary(type='submit') Złóż podanie

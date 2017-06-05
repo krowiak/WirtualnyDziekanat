@@ -137,7 +137,7 @@ exports.createNewApplication = function (applicationData) {
   }
   
   if (!applicationData.userId) {
-    throw ApplicationContentInvalidError('Należy uzupełnić użytkownika.');
+    throw new ApplicationContentInvalidError('Należy uzupełnić użytkownika.');
   }
   
   return definition.create({
