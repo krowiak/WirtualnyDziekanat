@@ -47,6 +47,8 @@ block content
               a.btn.btn-success(href="subjects/"+subject.id) Asign someone
             td
               button.btn.btn-danger(onClick='deleteSubject(' + subject.id + ');') Delete
+            td
+              button.btn.btn-secondary(href="subjects/report/"+subject.id) Raport
           else if user.role === '3'
             td= subject.grades[0] ? subject.grades[0].grade : 'brak'
             td= subject.grades[1] ? subject.grades[1].grade : 'brak'

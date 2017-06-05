@@ -14,15 +14,130 @@ mixin alerts(flashObj)
 block append styles
   link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css")
   link(rel="stylesheet",href="/stylesheets/style.css")
+  link(rel='stylesheet', type='text/css', href='/stylesheets/navbar-style.css')
+  link(href='https://fonts.googleapis.com/css?family=Lato:400,700', rel='stylesheet')
 block  body
   block header
-    +navbar("Wirtualny dziekanat", "dropdown_menu")
-      +nav_item("/","active") Strona główna
-      if user 
-        +nav_item("/logout") Wyloguj
-      else
-        +nav_item("/login") Zaloguj się
-        +nav_item("/registration") Zarejestruj się
+    if !user
+      nav.navbar.navbar-inverse
+        .container-fluid
+          .navbar-header
+            a.navbar-brand
+              img.img-responsive(style='display:inline-block; height:30px; margin-top:-5px', src='/images/logo-small.png')
+              |  Dziekanator3000
+          ul.nav.navbar-nav
+            li.active
+              a(href='/') Strona główna
+          ul.nav.navbar-nav.navbar-right
+            li
+              a(href='/registration')
+                span.glyphicon.glyphicon-pencil
+                |  Rejestracja
+            li
+              a(href='/login')
+                span.glyphicon.glyphicon-user
+                |  Logowanie
+                
+    else if user.role === '3'
+      nav.navbar.navbar-inverse
+        .container-fluid
+          .navbar-header
+            a.navbar-brand
+              img.img-responsive(style='display:inline-block; height:30px; margin-top:-5px', src='/images/logo-small.png')
+              |  Dziekanator3000
+          ul.nav.navbar-nav
+            li.active
+              a(href='/') Strona główna
+            li.dropdown
+              a.dropdown-toggle(data-toggle='dropdown', href='#')
+                | Przedmioty
+                span.caret
+              ul.dropdown-menu
+                li
+                  a(href='/student/subjects') Aktualne
+                li
+                  a(href='/student/subjects/history') Historia
+            li.dropdown
+              a.dropdown-toggle(data-toggle='dropdown', href='#')
+                | Wnioski
+                span.caret
+              ul.dropdown-menu
+                li
+                  a(href='/student/applications') Lista
+                li
+                  a(href='/student/applications/new') Złóż wniosek
+            li
+              a(href='/student/scholarships') Stypendia
+            li
+              a(href='/message') Wiadomości
+          ul.nav.navbar-nav.navbar-right
+            li
+              a(href='#')
+                span.glyphicon.glyphicon-education
+                |  #{user.firstName} #{user.lastName}
+            li
+              a(href='/logout')
+                span.glyphicon.glyphicon-off
+    
+    else if user.role === '2'
+      nav.navbar.navbar-inverse
+        .container-fluid
+          .navbar-header
+            a.navbar-brand
+              img.img-responsive(style='display:inline-block; height:30px; margin-top:-5px', src='/images/logo-small.png')
+              |  Dziekanator3000
+          ul.nav.navbar-nav
+            li.active
+              a(href='/') Strona główna
+            li
+              a(href='/teacher/subjects') Przedmioty
+            li
+              a(href='/message') Wiadomości
+          ul.nav.navbar-nav.navbar-right
+            li
+              a(href='#')
+                span.glyphicon.glyphicon-briefcase
+                |  #{user.firstName} #{user.lastName}
+            li
+              a(href='/logout')
+                span.glyphicon.glyphicon-off
+                
+    else if user.role === '1'
+      nav.navbar.navbar-inverse
+        .container-fluid
+          .navbar-header
+            a.navbar-brand
+              img.img-responsive(style='display:inline-block; height:30px; margin-top:-5px', src='/images/logo-small.png')
+              |  Dziekanator3000
+          ul.nav.navbar-nav
+            li.active
+              a(href='/') Strona główna
+            li.dropdown
+              a.dropdown-toggle(data-toggle='dropdown', href='#')
+                | Użytkownicy
+                span.caret
+              ul.dropdown-menu
+                li
+                  a(href='/admin/list/students') Studenci
+                li
+                  a(href='/admin/list/teachers') Nauczyciele
+            li
+              a(href='/admin/subjects') Przedmioty
+            li
+              a(href='/admin/applications') Podania
+            li
+              a(href='/admin/params') Parametry
+            li
+              a(href='/message') Wiadomości
+          ul.nav.navbar-nav.navbar-right
+            li
+              a(href='#')
+                span.glyphicon.glyphicon-tower
+                |  #{user.firstName} #{user.lastName}
+            li
+              a(href='/logout')
+                span.glyphicon.glyphicon-off
+      
     header
   .container
     div#alerts.container
