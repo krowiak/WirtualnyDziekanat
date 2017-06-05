@@ -7,3 +7,34 @@ footer {
 hidden {
   display: none;
 }
+
+.btn-primary{
+    background-color: #e80f27;
+    border-color: #ed877d;
+    border-width: 0;
+    color: #FFFFFF;
+    /*display: block;
+    margin: 0 auto;
+    padding: 15px 50px;
+    text-transform: uppercase;
+    width: 100%;*/
+}
+.btn-primary:hover{
+    background-color: #ed877d;
+    color: #880002;
+}
+
+.btn-primary:focus, .btn-primary:active{
+    background-color: #880002;
+    color: #ed877d;
+}
+
+.panel-primary .panel-heading{
+    background-color: #e80f27;
+    border-color: #ed877d;
+    color: #FFFFFF;
+}
+
+.panel-primary{
+  border-color: #ed877d;
+}
