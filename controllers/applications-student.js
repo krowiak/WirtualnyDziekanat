@@ -97,6 +97,7 @@ router.get('/:applicationId', function(req, res, next) {
                 req.viewData.reason = application.reason;
                 req.viewData.who = application.user;
                 req.viewData.status = applicationStatuses.getReadableStatus(application.status);
+                req.viewData.applicationId = application.id;
                 const body = JSON.parse(application.body);
                 req.viewData.body = body;
                 if (body.until) {
