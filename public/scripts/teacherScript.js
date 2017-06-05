@@ -36,13 +36,13 @@ function showSubject(index){
 											    + Subjects[index].users[i].firstName+'</td>'+'<td>' 
 											    + Subjects[index].users[i].lastName+'</td>'+'<td>'
 											    +'<div class="input-group">'
-											    +'<input id="fstAttempt" data-id="'+Subjects[index].users[i].id+'+1" type="number" name="quantity" min="2" max="5" step="0.5" class="form-control cos" placeholder="'+grades[0]+'">'
+											    +'<input id="fstAttempt" data-id="'+Subjects[index].users[i].id+'+1" type="number" name="quantity" min="2" max="5" step="0.5" class="form-control cos" value="'+grades[0]+'">'
 											    +' <span class="input-group-btn">'
 											    + '<button onClick="saveGrades('+Subjects[index].users[i].id+',1)" type="button" class="btn btn-success">Save'
 											    +'</button></span></div></td><td>'
 
 											    +'<div class="input-group">'
-											    +'<input id="scndAttempt" data-id="'+Subjects[index].users[i].id+'+2" type="number" name="quantity" min="2" max="5" step="0.5" class="form-control" placeholder="'+grades[1]+'">'
+											    +'<input id="scndAttempt" data-id="'+Subjects[index].users[i].id+'+2" type="number" name="quantity" min="2" max="5" step="0.5" class="form-control" value="'+grades[1]+'">'
 											    +' <span class="input-group-btn">'
 											    + '<button onClick="saveGrades('+Subjects[index].users[i].id+',2)" type="button" class="btn btn-success">Save'+
 											    '</button></span></div></td></tr>' );	

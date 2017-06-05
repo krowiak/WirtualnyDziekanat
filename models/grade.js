@@ -8,6 +8,7 @@ const subject = require('./subject');
 const GradeTargetInvalidError = require('./errors/grade-target-invalid');
 const GradeAlreadyExistsError = require('./errors/grade-already-exists');
 const GradeDoesNotExistError = require('./errors/grade-does-not-exist');
+const Promise = require('bluebird');
 
 const gradeDef = connection.define('grade', {
   id: {
@@ -19,16 +20,16 @@ const gradeDef = connection.define('grade', {
       type: Sequelize.INTEGER,
       allowNull: false,
       validate: {
-          min: 1,
-          max: 2 // "I lub II termin"
+          min: {args:1, msg:'Termin nie moze być wcześniejszy niż pierwszy'},
+          max: {args:2, msg:'Termin nie moze być późniejszy niż drugi'} // "I lub II termin"
       }
   },
   grade: {
       type: Sequelize.DECIMAL(2,1),
       allowNull: false,
       validate: {
-          min: 2,
-          max: 5
+          min: {args:2, msg: 'Ocena nie może być niższa niż 2.0'},
+          max: {args:5, msg: 'Ocena nie może być wyższa niż 5.0'}
       }
   },
   
@@ -52,7 +53,7 @@ exports.extractPublicFields = function (grade) {
     userId: grade.userId,
     subjectId: grade.subjectId
   };
-}
+};
 
 
 function getUserAndSubject(userId, subjectId) {
@@ -117,3 +118,53 @@ exports.updateGrade = function (userId, subjectId, attempt, newGrade) {
     }
   });
 };
+
+exports.addOrUpdateGrade = function (userId, subjectId, newGrade, attempt) {
+  return getUserAndSubject(userId, subjectId).spread((user, subject) => {
+    if (user.role !== userRoles.Student) {
+      throw new GradeTargetInvalidError('Tylko studenci mogą otrzymywać oceny z przedmiotów.',
+        userId, subjectId);
+    }
+    
+    let startState;
+    
+    if (attempt == 1) {
+      startState = Promise.resolve(null);
+    } else {
+      startState = gradeDef.findOne({
+        where: { 
+          userId: userId,
+          subjectId: subjectId,
+          attempt: 1
+        }
+      }).then((firstAttempt) => {
+        if (firstAttempt) {
+          return firstAttempt;
+        }
+        
+        throw new GradeTargetInvalidError('Najpierw należy wpisać ocenę za pierwszy termin.',
+          userId, subjectId);
+      });
+    }
+    
+    return startState.then((_) => {
+      return gradeDef.findOrCreate({
+          where: { 
+            userId: userId,
+            subjectId: subjectId,
+            attempt: attempt
+          },
+          defaults: {
+            grade: newGrade
+          }
+        }).spread((grade, created) => {
+          if (!created) {
+            grade.grade = newGrade;
+            return grade.save().then((_) => grade);
+          }
+          
+          return grade;
+      });
+    });
+  });
+}

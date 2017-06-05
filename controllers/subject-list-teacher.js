@@ -12,7 +12,7 @@ const logger = require('winston');
 const Promise = require('bluebird');
 
 function getSubjects(query, userId) {
-    const ordering = query.orderBy || [['year', 'ASC'], ['term', 'ASC']];
+    const ordering = query.orderBy || [['year', 'DESC'], ['term', 'DESC']];
     const where = query.where || {};
     return subjects.Subject.findAll({
         where: where,
@@ -23,7 +23,7 @@ function getSubjects(query, userId) {
         include: [{
             model: users.User,
             attributes: users.publicFields,
-            where: { id: userId }//{ role: userRoles.Student }
+            where: { id: userId }
         }]
     });
 }
@@ -37,7 +37,12 @@ function addUserData(subjectArray) {
     return Promise.map(subjectArray, (subject) => {
         return subject.getUsers({
             where: { role: userRoles.Student },
-            include: [{ model: grades.Grade, attributes: grades.publicFields }]
+            include: [{ 
+                model: grades.Grade,
+                attributes: grades.publicFields,
+                where: { subjectId: subject.id }
+            }],
+            order: [[grades.Grade, 'attempt', 'ASC']]
         }).then((users) => {return {subject: subjects.extractPublicFields(subject), users: users}});
     }).map((subjUser) => {
         subjUser.subject.users = subjUser.users.map((user) => {
@@ -79,12 +84,13 @@ router.post('/grade', function (req, res, next) {
         res.send({ type: 'warning', message: err.message });
     };
     
-    grades.addGrade(userId, subjectId, grade, attempt)
+    grades.addOrUpdateGrade(userId, subjectId, grade, attempt)
         .then((grade) => res.send(grades.extractPublicFields(grade)))
         .catch(GradeTargetInvalid, handleExpectedError)
         .catch(GradeAlreadyExists, handleExpectedError)
         .catch((err) => {
             logger.error('Bład dodawania oceny: %s', err);
+            console.log(err);
             res.send({ 
                 type: 'error', 
                 message: 'Nie udało się przypisać oceny. Spróbuj ponownie później.' 

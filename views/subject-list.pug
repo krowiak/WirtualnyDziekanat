@@ -2,45 +2,52 @@ extends layout
 
 block content
   
-  each subject in subjects
-    - let subjectId = subject.id;
-    - let subjectNameXD = subject.name + " xD";
-    div
-      p #{subject.id} #{subject.name}
-      button(onClick='$.post("delete-subject", {id:' + subjectId + '});') Usuń
-      button(onClick='$.post("change-subjects", {changes: [{id: ' + subjectId + ', name: "' + subjectNameXD + '"}]});') Dodaj " xD"
-  
-  .col-md-4.brd.col-md-offset-4
-    .panel.panel-primary
-      .panel-heading Dodawanie przedmiotu
-      .panel-body
-        form(name='admin/subjects/add-subject' method='POST' action='/admin/subjects/add-subject')
-          div.form-group
-            label(for='name') Name:
-            input#name.form-control(type='text' name='name')
-            label(for='year') Year:
-            input#name.form-control(type='text' name='year')
-            label(for='term') Term:
-            select#terms.select.form-control(name='term')
-              each term in terms
-                option(value=term.id) #{term.name}
-            
-          button.btn.btn-primary(type='submit' enctype='application/x-www-form-urlencoded') Dodaj
+  if user.role === '1'
+    each subject in subjects
+      - let subjectId = subject.id;
+      - let subjectNameXD = subject.name + " xD";
+      div
+        p #{subject.id} #{subject.name}
+        button(onClick='$.post("delete-subject", {id:' + subjectId + '});') Usuń
+        button(onClick='$.post("change-subjects", {changes: [{id: ' + subjectId + ', name: "' + subjectNameXD + '"}]});') Dodaj " xD"
+    
+    .col-md-4.brd.col-md-offset-4
+      .panel.panel-primary
+        .panel-heading Dodawanie przedmiotu
+        .panel-body
+          form(name='admin/subjects/add-subject' method='POST' action='/admin/subjects/add-subject')
+            div.form-group
+              label(for='name') Name:
+              input#name.form-control(type='text' name='name')
+              label(for='year') Year:
+              input#name.form-control(type='text' name='year')
+              label(for='term') Term:
+              select#terms.select.form-control(name='term')
+                each term in terms
+                  option(value=term.id) #{term.name}
+              
+            button.btn.btn-primary(type='submit' enctype='application/x-www-form-urlencoded') Dodaj
 
   table#subjectTable.table
     thead.thead-inverse
       tr
-        th id
         th Name
         th Year
         th Term
-        th Asign People
+        if user.role === '1'
+          th Assign People
+        else if user.role === '3'
+          th Grade (I)
+          th Grade (II)
     tbody
       each subject in subjects
         tr
-          td #{subject.id}
           td #{subject.name}
           td #{subject.year}
-          td #{subject.term}
-          td 
-            a.btn.btn-success(href="subjects/"+subject.id) Asign someone
+          td= subject.term == 1 ? 'Winter' : 'Summer'
+          if user.role === '1'
+            td 
+              a.btn.btn-success(href="subjects/"+subject.id) Asign someone
+          else if user.role === '3'
+            td= subject.grades[0] ? subject.grades[0].grade : 'brak'
+            td= subject.grades[1] ? subject.grades[1].grade : 'brak'

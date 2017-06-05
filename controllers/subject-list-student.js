@@ -19,7 +19,8 @@ function getSubjects(query, userId) {
             model: grades.Grade,
             attributes: grades.publicFields,
             where: { userId: userId },
-            required: false
+            required: false,
+            order: [['attempt', 'ASC']]
         },
         {
             model: users.User,
@@ -32,6 +33,12 @@ function getSubjects(query, userId) {
 
 function sendSubjects(res, subjects) {
     res.send(subjects);
+}
+
+function displaySubjects(req, res, subjects) {
+    const viewData = req.viewData;
+    viewData.subjects = subjects;
+    res.render('subject-list', viewData);
 }
 
 function removeUserData(subjectArray) {
@@ -52,6 +59,12 @@ function getAndSendSubjects(req, res) {
         .then((subjects) => sendSubjects(res, subjects));
 }
 
+function getAndDisplaySubjects(req, res) {
+    getSubjects(req.query, req.user.id)
+        .then(removeUserData)
+        .then((subjects) => displaySubjects(req, res, subjects));
+}
+
 router.get('/', function(req, res, next) {
     currentTerm.getCurrent().then((current) => {
         if (current) {
@@ -59,7 +72,7 @@ router.get('/', function(req, res, next) {
             where.year = current.year;
             where.term = current.term;
             req.query.where = where;
-            getAndSendSubjects(req, res);
+            getAndDisplaySubjects(req, res);
         } else {
             res.send({ 
                 type: 'warning', 
@@ -70,7 +83,7 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/history', function(req, res, next) {
-    getAndSendSubjects(req, res);
+    getAndDisplaySubjects(req, res);
 });
 
 module.exports = router;
