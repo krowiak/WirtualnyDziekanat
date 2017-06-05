@@ -1,5 +1,9 @@
 extends layout
 
+block append scripts
+  script(src='/scripts/rest-messages.js')
+  script(src='/scripts/adminSubjectList.js')
+  
 block content
   
   if user.role === '1'
@@ -7,12 +11,12 @@ block content
       .panel.panel-primary
         .panel-heading Dodawanie przedmiotu
         .panel-body
-          form(name='admin/subjects/add-subject' method='POST' action='/admin/subjects/add-subject')
+          form(name='admin/subjects/add-subject' method='POST' onSubmit='return sendForm();')
             div.form-group
               label(for='name') Name:
               input#name.form-control(type='text' name='name')
               label(for='year') Year:
-              input#name.form-control(type='text' name='year')
+              input#year.form-control(type='text' name='year')
               label(for='term') Term:
               select#terms.select.form-control(name='term')
                 each term in terms
@@ -34,7 +38,7 @@ block content
           th Grade (II)
     tbody
       each subject in subjects
-        tr
+        tr(id=subject.id)
           td #{subject.name}
           td #{subject.year}
           td= subject.term == 1 ? 'Winter' : 'Summer'
@@ -42,7 +46,7 @@ block content
             td 
               a.btn.btn-success(href="subjects/"+subject.id) Asign someone
             td
-              button.btn.btn-danger(onClick='$.post("subjects/delete-subject", {id:' + subject.id + '});') Delete
+              button.btn.btn-danger(onClick='deleteSubject(' + subject.id + ');') Delete
           else if user.role === '3'
             td= subject.grades[0] ? subject.grades[0].grade : 'brak'
             td= subject.grades[1] ? subject.grades[1].grade : 'brak'
