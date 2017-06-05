@@ -7,6 +7,7 @@ const userSubjects = require("../models/user-subjects");
 const grades = require("../models/grade");
 const message = require("../models/message");
 const application = require("../models/application");
+const currentTerm = require("../models/current-term");
 
 connection.drop();
 connection.sync({force: true})

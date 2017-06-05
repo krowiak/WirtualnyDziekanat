@@ -5,9 +5,10 @@ const router = express.Router();
 const grades = require('../models/grade');
 const users = require('../models/user');
 const subjects = require('../models/subject');
+const currentTerm = require('../models/current-term');
 
 function getSubjects(query, userId) {
-    const ordering = query.orderBy || [['year', 'ASC'], ['term', 'ASC']];
+    const ordering = query.orderBy || [['year', 'DESC'], ['term', 'DESC']];
     return subjects.Subject.findAll({
         where: query.where,
         attributes: subjects.publicFields,
@@ -45,10 +46,31 @@ function removeUserData(subjectArray) {
     return results;
 }
 
-router.get('/', function(req, res, next) {
+function getAndSendSubjects(req, res) {
     getSubjects(req.query, req.user.id)
         .then(removeUserData)
         .then((subjects) => sendSubjects(res, subjects));
+}
+
+router.get('/', function(req, res, next) {
+    currentTerm.getCurrent().then((current) => {
+        if (current) {
+            const where = req.query.where || {};
+            where.year = current.year;
+            where.term = current.term;
+            req.query.where = where;
+            getAndSendSubjects(req, res);
+        } else {
+            res.send({ 
+                type: 'warning', 
+                message: 'Nie udało się ustalić listy aktualnych przedmiotów. Skontaktuj się z administratorem.' 
+            });
+        }
+    })
+});
+
+router.get('/history', function(req, res, next) {
+    getAndSendSubjects(req, res);
 });
 
 module.exports = router;

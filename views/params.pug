@@ -1,0 +1,25 @@
+extends layout
+
+block append scripts
+  script(src='/scripts/paramsScript.js')
+
+block content
+  
+  h1 Parametry
+  
+  table#subjectTable.table
+    thead.thead-inverse
+      tr
+        th Aktualny rok
+        th Aktualny semestr
+        th  
+    tbody
+      tr
+        td 
+          input#year(type='number' name='year' value=current.year)
+        td 
+          select#term.select(name='term')
+            option(value=1 selected=(current.term === 1)) Zimowy
+            option(value=2 selected=(current.term === 2)) Letni
+        td 
+          a#saveCurr.btn.btn-success Zapisz zmiany

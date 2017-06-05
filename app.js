@@ -26,6 +26,7 @@ const subjectListsStudent = require('./controllers/subject-list-student');
 const applicationsAdmin = require('./controllers/applications-admin');
 const applicationsStudents = require('./controllers/applications-student');
 const scholarships = require('./controllers/scholarships');
+const paramsAdmin = require('./controllers/params');
 
 const messageController = require('./controllers/messages');
 
@@ -90,6 +91,7 @@ app.use('/admin', auth.authorize('1'));
 app.use('/admin/list', userLists);
 app.use('/admin/subjects', subjectLists);
 app.use('/admin/applications', applicationsAdmin);
+app.use('/admin/params', paramsAdmin);
 
 // Strony tylko dla nauczycieli
 app.use('/teacher', auth.authenticate());
