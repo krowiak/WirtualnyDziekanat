@@ -47,7 +47,12 @@ function handleNoSuchApplication(req, res, application) {
 
 router.get('/', function(req, res, next) {
     getApplications(req.query, req.user.id)
-        .then((applications) => res.send(applications));
+        .then((applicationList) => applicationList.map(applications.makeReadableApplicationObject))
+        .then((applicationList) => {
+            const viewData = req.viewData;
+            viewData.applications = applicationList;
+            res.render('application-list', viewData);
+        });
 });
 
 router.get('/pdf/:applicationId', function(req, res, next) {

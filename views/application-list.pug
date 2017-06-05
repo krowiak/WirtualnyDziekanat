@@ -1,0 +1,23 @@
+extends layout
+
+block content
+  - var whoPrefix = user.role === '3' ? '/student' : '/admin'
+
+  table#applicationsTable.table
+    thead.thead-inverse
+      tr
+        th Powód złożenia
+        th Data złożenia
+        th Status
+        th 
+    tbody
+      each application in applications
+        tr
+          td #{application.reason}
+          td #{application.createdAt}
+          td #{application.status}
+          td
+            a.btn.btn-primary(href=whoPrefix + "/applications/"+application.id) Zobacz
+  
+  if user.role === '3'
+    a.btn.btn-primary(href=whoPrefix + "/applications/new") Złóż podanie

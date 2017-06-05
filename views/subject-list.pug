@@ -3,14 +3,6 @@ extends layout
 block content
   
   if user.role === '1'
-    each subject in subjects
-      - let subjectId = subject.id;
-      - let subjectNameXD = subject.name + " xD";
-      div
-        p #{subject.id} #{subject.name}
-        button(onClick='$.post("delete-subject", {id:' + subjectId + '});') Usuń
-        button(onClick='$.post("change-subjects", {changes: [{id: ' + subjectId + ', name: "' + subjectNameXD + '"}]});') Dodaj " xD"
-    
     .col-md-4.brd.col-md-offset-4
       .panel.panel-primary
         .panel-heading Dodawanie przedmiotu
@@ -36,6 +28,7 @@ block content
         th Term
         if user.role === '1'
           th Assign People
+          th 
         else if user.role === '3'
           th Grade (I)
           th Grade (II)
@@ -48,6 +41,8 @@ block content
           if user.role === '1'
             td 
               a.btn.btn-success(href="subjects/"+subject.id) Asign someone
+            td
+              button.btn.btn-danger(onClick='$.post("subjects/delete-subject", {id:' + subject.id + '});') Delete
           else if user.role === '3'
             td= subject.grades[0] ? subject.grades[0].grade : 'brak'
             td= subject.grades[1] ? subject.grades[1].grade : 'brak'

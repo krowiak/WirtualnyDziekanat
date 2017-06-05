@@ -37,9 +37,19 @@ function getOneApplication(applicationId) {
     });
 }
 
+// router.get('/', function(req, res, next) {
+//     getApplications(req.query)
+//         .then((applications) => res.send(applications));
+// });
+
 router.get('/', function(req, res, next) {
-    getApplications(req.query)
-        .then((applications) => res.send(applications));
+    getApplications(req.query, req.user.id)
+        .then((applicationList) => applicationList.map(applications.makeReadableApplicationObject))
+        .then((applicationList) => {
+            const viewData = req.viewData;
+            viewData.applications = applicationList;
+            res.render('application-list', viewData);
+        });
 });
 
 router.get('/:applicationId', function(req, res, next) {

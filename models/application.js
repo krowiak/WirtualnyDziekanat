@@ -184,3 +184,13 @@ exports.toPdf = function (application, outputPipe) {
       throw new ApplicationContentInvalidError('Powód złożenia aplikacji jest nieprawidłowy.');
   }
 };
+
+exports.makeReadableApplicationObject = function(application) {
+  return {
+    id: application.id,
+    reason: applicationReasons.getReadableReason(application.reason),
+    createdAt: moment(application.created_at).format('DD.MM.YYYY'),
+    status: applicationStatuses.getReadableStatus(application.status),
+    body: application.body
+  };
+};
