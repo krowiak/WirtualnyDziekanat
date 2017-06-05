@@ -11,6 +11,7 @@ const SequelizeValidationError = require('sequelize').ValidationError;
 const logger = require('winston');
 const moment = require('moment');
 const scholarshipReasons = require('../models/scholarship-reasons');
+const helpers = require('./helpers');
 
 function getApplications(query) {
     const ordering = query.orderBy || [['created_at', 'DESC']];
@@ -59,7 +60,7 @@ router.get('/:applicationId', function(req, res, next) {
                 }
                 res.render('application-display', req.viewData);
             } else {
-                res.send({ 
+                helpers.renderMessage(req, res, { 
                     type: 'warning', 
                     message: s.sprintf('Brak podania o ID %s.', applicationId)
                 });

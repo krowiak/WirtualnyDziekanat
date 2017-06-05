@@ -8,6 +8,7 @@ const logger = require('winston');
 const ApplicationContentInvalidError = require('../models/errors/application-content-invalid');
 const moment = require('moment');
 const scholarshipReasons = require('../models/scholarship-reasons');
+const helpers = require('./helpers');
 
 function getApplications(query, userId) {
     const ordering = query.orderBy || [['created_at', 'DESC']];
@@ -33,9 +34,12 @@ function getOneApplication(applicationId) {
     });
 }
 
-function handleNoSuchApplication(res, application) {
+function handleNoSuchApplication(req, res, application) {
     if (!application) {
-        res.send({ type: 'warning', message: 'Wskazane podanie nie istnieje.' })
+        helpers.renderMessage(req, res, { 
+            type: 'warning', 
+            message: 'Wskazane podanie nie istnieje.' 
+        });
     }
     return application;
 }
@@ -47,7 +51,7 @@ router.get('/', function(req, res, next) {
 
 router.get('/pdf/:applicationId', function(req, res, next) {
     getOneApplication(req.params.applicationId)
-        .then((application) => handleNoSuchApplication(res, application))
+        .then((application) => handleNoSuchApplication(req, res, application))
         .then((application) => {
             if (application) {
                 res.attachment('super.pdf');
@@ -56,7 +60,7 @@ router.get('/pdf/:applicationId', function(req, res, next) {
             return true;  // Obietnice muszą coś zwracać jeśli obsługa błędów itd. ma działać
         }).catch((err) => {
             logger.error('Błąd tworzenia PDFa: %s', err);
-            res.send({ 
+            helpers.renderMessage(req, res, { 
                 type: 'error', 
                 message: 'Nie udało się wygenerować pliku z podaniem. Spróbuj ponownie później.' 
             });
@@ -81,7 +85,7 @@ router.post('/new', function(req, res, next) {
 
 router.get('/:applicationId', function(req, res, next) {
     getOneApplication(req.params.applicationId)
-        .then((application) => handleNoSuchApplication(res, application))
+        .then((application) => handleNoSuchApplication(req, res, application))
         .then((application) => {
             if (application) {
                 req.viewData.reason = application.reason;

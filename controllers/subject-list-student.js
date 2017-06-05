@@ -6,6 +6,7 @@ const grades = require('../models/grade');
 const users = require('../models/user');
 const subjects = require('../models/subject');
 const currentTerm = require('../models/current-term');
+const helpers = require('./helpers');
 
 function getSubjects(query, userId) {
     const ordering = query.orderBy || [['year', 'DESC'], ['term', 'DESC']];
@@ -74,7 +75,7 @@ router.get('/', function(req, res, next) {
             req.query.where = where;
             getAndDisplaySubjects(req, res);
         } else {
-            res.send({ 
+            helpers.renderMessage(req, res, { 
                 type: 'warning', 
                 message: 'Nie udało się ustalić listy aktualnych przedmiotów. Skontaktuj się z administratorem.' 
             });
