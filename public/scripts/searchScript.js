@@ -15,9 +15,9 @@ function createTable(users){
 			    $('#userTable tbody').append( '<tr><td>'+ users[i].id +'</td>' +'<td>' 
 											    	+ users[i].firstName+'</td>'+'<td>' 
 											    	+ users[i].lastName+'</td>'+'<td>'
-											    	+ '<button onClick="blockUser('+i+')" type="button" class="btn btn-warning">'+(users[i].locked?'Unlock':'Block')+
+											    	+ '<button onClick="blockUser('+i+')" type="button" class="btn btn-warning">'+(users[i].locked?'Odblokuj':'Zablokuj')+
 											    	'</button></td><td>'+ 
-											    	'<button onClick="forcePasswordChange('+i+')" type="button" class="btn btn-danger">'+(users[i].forcePasswordChange?'Nevermind':'Force password change')+
+											    	'<button onClick="forcePasswordChange('+i+')" type="button" class="btn btn-danger">'+(users[i].forcePasswordChange?'Nieważne':'Wymuś zmianę hasła')+
 											    	'</button></td></tr>' );
 	}
 }

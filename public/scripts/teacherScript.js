@@ -16,7 +16,7 @@ function createTable(subjects){
 											    	+ subjects[i].name+'</td>'+'<td>' 
 											    	+ subjects[i].year+'</td>'+'<td>'
 											    	+ subjects[i].term+'</td>'+'<td>'
-											    	+ '<button onClick="showSubject('+i+')" type="button" class="btn btn-success">Show'+
+											    	+ '<button onClick="showSubject('+i+')" type="button" class="btn btn-success">Pokaż'+
 											    	'</button></td></tr>' );
 	}
 }
@@ -38,13 +38,13 @@ function showSubject(index){
 											    +'<div class="input-group">'
 											    +'<input id="fstAttempt" data-id="'+Subjects[index].users[i].id+'+1" type="number" name="quantity" min="2" max="5" step="0.5" class="form-control cos" value="'+grades[0]+'">'
 											    +' <span class="input-group-btn">'
-											    + '<button onClick="saveGrades('+Subjects[index].users[i].id+',1)" type="button" class="btn btn-success">Save'
+											    + '<button onClick="saveGrades('+Subjects[index].users[i].id+',1)" type="button" class="btn btn-success">Zapisz'
 											    +'</button></span></div></td><td>'
 
 											    +'<div class="input-group">'
 											    +'<input id="scndAttempt" data-id="'+Subjects[index].users[i].id+'+2" type="number" name="quantity" min="2" max="5" step="0.5" class="form-control" value="'+grades[1]+'">'
 											    +' <span class="input-group-btn">'
-											    + '<button onClick="saveGrades('+Subjects[index].users[i].id+',2)" type="button" class="btn btn-success">Save'+
+											    + '<button onClick="saveGrades('+Subjects[index].users[i].id+',2)" type="button" class="btn btn-success">Zapisz'+
 											    '</button></span></div></td></tr>' );	
 	}
 	

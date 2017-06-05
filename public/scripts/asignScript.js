@@ -18,7 +18,7 @@ function createTable(users){
 			    $('#userTable tbody').append( '<tr><td>'+ users[i].id +'</td>' +'<td>' 
 											    	+ users[i].firstName+'</td>'+'<td>' 
 											    	+ users[i].lastName+'</td>'+'<td>'
-											    	+ '<button onClick="asignToSubject('+i+')" type="button" class="btn btn-success">Asign'+
+											    	+ '<button onClick="asignToSubject('+i+')" type="button" class="btn btn-success">Przypisz'+
 											    	'</button></td></tr>' );
 	}
 }
@@ -31,14 +31,14 @@ function recreateAsignedTable(users){
 			$('#asignedTeachersTable tbody').append( '<tr><td>'+ users[i].id +'</td>' +'<td>' 
 											    + users[i].firstName+'</td>'+'<td>' 
 											    + users[i].lastName+'</td>'+'<td>'
-											    + '<button onClick="removeFromSubject('+i+')" type="button" class="btn btn-danger">Remove'+
+											    + '<button onClick="removeFromSubject('+i+')" type="button" class="btn btn-danger">Usuń'+
 											    '</button></td></tr>' );
 		}
 		else if(users[i].role==3){
 			$('#asignedStudentsTable tbody').append( '<tr><td>'+ users[i].id +'</td>' +'<td>' 
 											    + users[i].firstName+'</td>'+'<td>' 
 											    + users[i].lastName+'</td>'+'<td>'
-											    + '<button onClick="removeFromSubject('+i+')" type="button" class="btn btn-danger">Remove'+
+											    + '<button onClick="removeFromSubject('+i+')" type="button" class="btn btn-danger">Usuń'+
 											    '</button></td></tr>' );	
 		}
 	}
