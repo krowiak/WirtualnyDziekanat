@@ -9,45 +9,45 @@ block content
 			.modal-content
 				.modal-header
 					button.close(type='button', data-dismiss='modal') ×
-					h4.modal-title From:
+					h4.modal-title Od:
 				.modal-body
 					p Some text in the modal.
 				.modal-footer
-					button#respondButton.btn.btn-info(type='button', data-dismiss='modal') Respond
+					button#respondButton.btn.btn-primary(type='button', data-dismiss='modal') Odpowiedz
 	#notmyModal.modal.fade(role='dialog')
 			.modal-dialog
 			// Modal content
 			.modal-content
 				.modal-header
 					button.close(type='button', data-dismiss='modal') ×
-					h4.modal-title To:
+					h4.modal-title Do:
 				.modal-body
 					.form-group
-						label(for='comment') Content:
+						label(for='comment') Treść:
 						textarea#comment.form-control(rows='5')
 				.modal-footer
-					button#sendButton.btn.btn-success(type='button') Send
-	h1 Messages
+					button#sendButton.btn.btn-primary(type='button') Wyślij
+	h1 Wiadomości
 	.row    
 		.col-lg-4 
 			.row
 				.col-md-12
 					.input-group
-						input#searchText.form-control(type='text', placeholder='Search for...')
+						input#searchText.form-control(type='text', placeholder='Szukaj...')
 						span.input-group-btn
-							button#searchbtn.btn.btn-default(type='button') Search!
+							button#searchbtn.btn.btn-primary(type='button') Szukaj!
 			table#userTable.table
 				thead.thead-inverse
 					tr
-						th First Name
-						th Last Name
-						th Send
+						th Imię
+						th Nazwisko
+						th Wyślij
 				tbody
 		.col-lg-8(style="background-color: #ebebeb;")
 			table#allMessages.table
 				thead.thead-inverse
 					tr 
-						th From
-						th When
-						th Check
+						th Od
+						th Data
+						th Odczytaj
 				tbody
