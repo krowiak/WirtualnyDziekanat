@@ -93,7 +93,7 @@ router.post('/add-subject', function(req, res, next) {
     };
     logger.info(subjectData);
     subjects.createNewSubject(subjectData).then((subject) => {
-        res.send({ type: 'info', message: s.sprintf('Dodano przedmiot "%s".', subjectData.name) });
+        res.send({ type: 'success', message: s.sprintf('Dodano przedmiot "%s".', subjectData.name) });
     }).catch(SubjectAlreadyExistsError, function(err) {
         res.send({ type: 'warning', message: 'Przedmiot o podanej nazwie już istnieje dla podanego semestru.' });
     }).catch(SequelizeValidationError, function(err) {
@@ -118,7 +118,7 @@ router.post('/delete-subject', function(req, res, next) {
             const name = subject.name;
             
             subject.destroy().then((_) => {
-               res.send({ type: 'info', message: s.sprintf('Przedmiot "%s" został usunięty.', name)});
+               res.send({ type: 'success', message: s.sprintf('Przedmiot "%s" został usunięty.', name)});
             });
         } else {
             res.send({ type: 'warning', message: 'Wskazany przedmiot nie istnieje.' });
