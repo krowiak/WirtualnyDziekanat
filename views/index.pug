@@ -1,42 +1,47 @@
 extends layout
 
-block content
-  .row
-    h2.text-center Witaj w serwisie Dziekanator3000
-    .row
-      .col-md-4.text-center
-        .box.news
-          .box-content
-            h1.tag-title ECTS
-            hr
-            p.text-justify
-              | Każdy członek społeczności akademickiej Uniwersytetu Śląskiego posiada swoje konto użytkownika w serwisie USOSweb, dające studentom możliwość wglądu w oceny oraz uzyskane punkty 
-              abbr(title='European Credit Transfer System') ECTS
-              | , sprawdzenia przyznanych stypendiów oraz miejsca w akademiku, wprowadzenia zdjęcia do Elektronicznej Legitymacji Studenckiej a także uzyskania informacji o numerze indywidualnego konta bankowego, na które student będzie zobowiązany wnosić ewentualne opłaty związane ze studiami. Większość Wydziałów Uniwersytetu Śląskiego uruchamia elektroniczne rejestracje do grup zajęciowych, w których studenci uczestniczą za pomocą serwisu USOSweb. Pracownikom prowadzącym zajęcia dydaktyczne serwis umożliwia wprowadzenie ocen oraz sylabusów do zajęć.
-            br
-            a.btn.btn-block.btn-primary(href='#') Czytaj więcej
-      .col-md-4.text-center
-        .box
-          .box-content
-            h1.tag-title Katalog
-            hr
-            p.text-justify
-              | Niezależnie od posiadanej roli, część informacji prezentowanych w USOSweb dostępna jest publicznie - jest to tzw. KATALOG, w którym znajdują się m. in. informacje o prowadzonych kierunkach studiów oraz wykazy pracowników, przedmiotów, jednostek organizacyjnych. Zdecydowana jednak większość funkcjonalności dostępna jest jedynie dla uwierzytelnionych użytkowników. Logowanie do serwisu USOSweb, jak również do pozostałych serwisów współdziałających z systemem USOS odbywa się za pośrednictwem 
-              abbr(title='Centralny System Uwierzytelniania') CAS
-              |  Uniwersytetu Śląskiego.
-            br
-            a.btn.btn-block.btn-primary(href='#') Czytaj więcej
-      .col-md-4.text-center
-        .box
-          .box-content
-            h1.tag-title Identyfikator
-            hr
-            p.text-justify
-              | Identyfikatorem w 
-              abbr(title='Centralny System Uwierzytelniania') CAS
-              |  jest numer PESEL, numer indeksu lub adres e-mail. Studenci rozpoczynający studia w Uniwersytecie Śląskim logują się hasłem wykorzystywanym w systemie Internetowej Rejestracji Kandydatów. W przypadku utraty hasła do konta w 
-              abbr(title='Centralny System Uwierzytelniania') CAS
-              |  można samodzielnie zresetować hasło podając adres poczty elektronicznej wykorzystywany w systemach informatycznych Uniwersytetu Śląskiego.
-            br
-            a.btn.btn-block.btn-primary(href='#') Czytaj więcej
+block append styles
+  link(rel="stylesheet",href="/stylesheets/login-register.css")
 
+block content
+  .news
+    .container
+      .row
+        h2.text-center Witaj w serwisie Dziekanator3000
+        .row
+          .col-md-4.text-center
+            .box.news
+              .box-content
+                h1.tag-title ECTS
+                hr
+                p.text-justify
+                  | Każdy członek społeczności akademickiej Uniwersytetu Śląskiego posiada swoje konto użytkownika w serwisie USOSweb, dające studentom możliwość wglądu w oceny oraz uzyskane punkty 
+                  abbr(title='European Credit Transfer System') ECTS
+                  | , sprawdzenia przyznanych stypendiów oraz miejsca w akademiku, wprowadzenia zdjęcia do Elektronicznej Legitymacji Studenckiej a także uzyskania informacji o numerze indywidualnego konta bankowego, na które student będzie zobowiązany wnosić ewentualne opłaty związane ze studiami. Większość Wydziałów Uniwersytetu Śląskiego uruchamia elektroniczne rejestracje do grup zajęciowych, w których studenci uczestniczą za pomocą serwisu USOSweb. Pracownikom prowadzącym zajęcia dydaktyczne serwis umożliwia wprowadzenie ocen oraz sylabusów do zajęć.
+                br
+                a.btn.btn-block.btn-primary(href='#') Czytaj więcej
+          .col-md-4.text-center
+            .box
+              .box-content
+                h1.tag-title Katalog
+                hr
+                p.text-justify
+                  | Niezależnie od posiadanej roli, część informacji prezentowanych w USOSweb dostępna jest publicznie - jest to tzw. KATALOG, w którym znajdują się m. in. informacje o prowadzonych kierunkach studiów oraz wykazy pracowników, przedmiotów, jednostek organizacyjnych. Zdecydowana jednak większość funkcjonalności dostępna jest jedynie dla uwierzytelnionych użytkowników. Logowanie do serwisu USOSweb, jak również do pozostałych serwisów współdziałających z systemem USOS odbywa się za pośrednictwem 
+                  abbr(title='Centralny System Uwierzytelniania') CAS
+                  |  Uniwersytetu Śląskiego.
+                br
+                a.btn.btn-block.btn-primary(href='#') Czytaj więcej
+          .col-md-4.text-center
+            .box
+              .box-content
+                h1.tag-title Identyfikator
+                hr
+                p.text-justify
+                  | Identyfikatorem w 
+                  abbr(title='Centralny System Uwierzytelniania') CAS
+                  |  jest numer PESEL, numer indeksu lub adres e-mail. Studenci rozpoczynający studia w Uniwersytecie Śląskim logują się hasłem wykorzystywanym w systemie Internetowej Rejestracji Kandydatów. W przypadku utraty hasła do konta w 
+                  abbr(title='Centralny System Uwierzytelniania') CAS
+                  |  można samodzielnie zresetować hasło podając adres poczty elektronicznej wykorzystywany w systemach informatycznych Uniwersytetu Śląskiego.
+                br
+                a.btn.btn-block.btn-primary(href='#') Czytaj więcej
+  
