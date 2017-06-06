@@ -40,7 +40,8 @@ function addUserData(subjectArray) {
             include: [{ 
                 model: grades.Grade,
                 attributes: grades.publicFields,
-                where: { subjectId: subject.id }
+                where: { subjectId: subject.id },
+                required: false
             }],
             order: [[grades.Grade, 'attempt', 'ASC']]
         }).then((users) => {return {subject: subjects.extractPublicFields(subject), users: users}});
